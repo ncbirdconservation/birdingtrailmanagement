@@ -1,0 +1,1100 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"edi",
+				"enable-editing"
+			],
+			[
+				"lat",
+				"lat"
+			],
+			[
+				"update",
+				"updateSiteInfo"
+			],
+			[
+				"w3w",
+				"w3wgriduri"
+			],
+			[
+				"font-",
+				"font-style\tproperty"
+			],
+			[
+				"clear",
+				"clearModalPanel"
+			],
+			[
+				"LON",
+				"LON"
+			],
+			[
+				"ebird",
+				"eBirdId"
+			],
+			[
+				"Interpretive",
+				"INTERPRETIVE"
+			],
+			[
+				"FEE",
+				"FEE"
+			],
+			[
+				"siteMouse",
+				"siteMouseoverListeners"
+			],
+			[
+				"popup-b",
+				"popup-bubble-anchor"
+			],
+			[
+				"popup-buble",
+				"popup-bubble-content"
+			],
+			[
+				"web",
+				"web-button"
+			],
+			[
+				"php",
+				"php"
+			],
+			[
+				"btn",
+				"btn-primary"
+			],
+			[
+				"sitslug",
+				"siteslug"
+			],
+			[
+				"wp_en",
+				"wp_enqueue_scripts"
+			],
+			[
+				"siteslug",
+				"siteslug"
+			],
+			[
+				"retrieve",
+				"retrive_map_sites"
+			],
+			[
+				"p",
+				"p\tTag"
+			],
+			[
+				"Gator",
+				"GatorDetectability"
+			],
+			[
+				"water",
+				"WaterTempSD"
+			],
+			[
+				"MinsPer",
+				"MinsPerTransectSD"
+			],
+			[
+				"Mins",
+				"MinsPerTransectAvg"
+			],
+			[
+				"Air",
+				"AirTempAvg"
+			],
+			[
+				"site",
+				"site"
+			],
+			[
+				"slug",
+				"slug"
+			],
+			[
+				"value",
+				"valueAsText"
+			],
+			[
+				"bbs",
+				"bbs_stops"
+			],
+			[
+				"bbs_data",
+				"bbs_data_download"
+			],
+			[
+				"rte",
+				"rtestop_head"
+			],
+			[
+				"first",
+				"first_data_col"
+			],
+			[
+				"Number",
+				"NumberByPartyHours"
+			],
+			[
+				"skip",
+				"skip_h\tstatement"
+			],
+			[
+				"bs",
+				"bs"
+			],
+			[
+				"inline",
+				"inline-block"
+			],
+			[
+				"r",
+				"r\tstatement"
+			],
+			[
+				"us_state",
+				"us_state_abbr\tstatement"
+			],
+			[
+				"state",
+				"state_col\tstatement"
+			],
+			[
+				"date",
+				"date_col\tstatement"
+			],
+			[
+				"sciname",
+				"sciname_col\tstatement"
+			],
+			[
+				"st",
+				"st"
+			],
+			[
+				"nl",
+				"nl\tstatement"
+			],
+			[
+				"Y",
+				"YCPA"
+			],
+			[
+				"yr",
+				"yrsall"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "<?php\n\n/*\nPlugin Name:  Birding Trail Management\nPlugin URI:   https://developer.wordpress.org/plugins/birdingtrailmanagement/\nDescription:  For managing nature trail site information, pairs with birdingtrail theme\nVersion:      0.1\nAuthor:       Scott Anderson, ncbirdconservation\nAuthor URI:   https://ncbirdingtrail.org\nLicense:      GPL2\nLicense URI:  https://www.gnu.org/licenses/gpl-2.0.html\nText Domain:  wporg\nDomain Path:  /languages\n*/\n\n//prevents direct access\ndefined( 'ABSPATH' ) or die( 'No script kiddies please!' );\n\n/* ====================================================================\n* Setup\n*/\n\nfunction trailmgmt_load_scripts ($hook) {\n\tif ($hook != 'sites.php') { return;}\n/*\n\twp_register_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');\n\twp_enqueue_style('font-awesome');\n*/\n\twp_register_style('trailmgmt', dirname( __FILE__ ) . '/css/trailmgmt.css');\n\twp_enqueue_style('trailmgmt');\n/*\n\twp_enqueue_style('bootstrap', dirname( __FILE__ ) . '/bootstrap/css/bootstrap.css');\n\twp_enqueue_style('parent-style', dirname( __FILE__ )  . '/style.css',array('bootstrap'));\n\twp_enqueue_script( 'bootstrap-js', dirname( __FILE__ )  . '/bootstrap/js/bootstrap.min.js', array( 'jquery' ), '4.0.0', false );\n*/\t\n};\n\nadd_action( 'admin_enqueue_scripts', 'trailmgmt_load_scripts' );\n/*\nadd_action( 'wp_enqueue_scripts', 'trailmgmt_load_scripts' );\n*/\n\n/* ====================================================================\n* Creates Menu for Managing Trail Data\n*/\n\n\n\n//hook for adding admin menus\nadd_action('admin_menu','birdingtrail_add_pages');\n\nfunction birdingtrail_add_pages() {\n\n\t$page_title = 'Trail Management';\n\t$menu_title = 'Trail Management';\n\t$capability = 'manage_options';\n\t$menu_slug = 'trail-management';\n\t//$function = trail_management_menu();\n\n\t//top menu\n\t//add_menu_page( $page_title, $menu_title, $capability, $menu_slug, trail_management_menu());\n\tadd_menu_page( \n\t\t$page_title,\n\t\t$menu_title,\n\t\t$capability,\n\t\t$menu_slug,\n\t\t'trailmgmt_menu'\n\t);\n\n//\t\tplugins_url('birdingtrailmanagement/img/favicon.ico'), //TESTING\n\t//sub-menu (setup)\n\t//plugin function, reference theme to use\n\t//import functions\n\t//descriptions (fields in each table, etc.)\n\t//$submenu_setup_slug = 'setup';\n\t//add_submenu_page($menu_slug,'Setup','Setup',$capability,$submenu_setup_slug);\n\n\t//sub-menu (trail sites)\n\t// forms for data entry, table of existing sites\n\t\n\t$submenu_trailsites_slug = 'trail-sites';\n\tadd_submenu_page(\n\t\t$menu_slug,\n\t\t'Trail Sites',\n\t\t'Trail Sites',\n\t\t$capability,\n\t\tplugin_dir_path( __FILE__ ) . 'sites.php',\n\t\tnull\n\t);\n\n\t/* FUTURE MENUS\n\t//sub-menu (businesses)\n\t$submenu_business_slug = 'businesses';\n\tadd_submenu_page($menu_slug,$submenu_business_slug,$capability,$menu_slug);\n\n\n\t//sub-menu (visits)\n\t$submenu_visits_slug = 'visits';\n\tadd_submenu_page($menu_slug,$submenu_visits_slug,$capability,$menu_slug);\n\t*/\n\n}\n\n//Adds ajaxurl variable to JS on pages, used in ajax calls\n/* NOT NEEDED? Already loaded in functions.php?\nadd_action('wp_head','pluginname_ajaxurl');\nfunction pluginname_ajaxurl() {\n\t?>\n\t<script type=\"text/javascript\">\n\t\tvar ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';\n\t</script>\n\t<?php\n}\n*/\n\nfunction trailmgmt_menu() {\n\tif ( !current_user_can( 'manage_options' ) )  {\n\t\twp_die( __( 'You do not have sufficient permissions to access this page.' ) );\n\t}\n\techo '<div class=\"wrap\">';\n\techo '<p>Here is where the form would go if I actually had options.</p>';\n\techo '</div>';\n\n}\n\n/* SITES MENU */\n/*\nfunction trailmgmt_sites_menu() {\n\tif ( !current_user_can( 'manage_options' ) )  {\n\t\twp_die( __( 'You do not have sufficient permissions to access this page.' ) );\n\t}\n\t//start HTML for site menu\n\t?>\n\t<div class=\"wrap\">\n\t\t<ul class=\"list-group\">\n\t\t  <li class=\"list-group-item\" style=\"width:100%;border:\">testing again</li>\n\t\t  <li class=\"list-group-item\">test site 3</li>\n\t\t  <li class=\"list-group-item\">Morbi leo risus</li>\n\t\t  <li class=\"list-group-item\">Porta ac consectetur ac</li>\n\t\t  <li class=\"list-group-item\">Vestibulum at eros</li>\n\t\t</ul>\t\t\n\t</div>\n\n\t<?php //end HTML for form, back to php \n\t\n}\n*/\n\n/* ====================================================================\n* Plugin Activation\n* Creates table(s) to store site data, visit data, and business data\n*/\n\n/* VERSIONING - good idea, but disabled for debugging\nglobal $trailmgmt_db_version;\n$trailmgmt_db_version = '0.1';\n*/\nfunction trailmgmt_setup_site_table(){\n\t//Insert code here to set up the trail site table\n\n\tglobal $wpdb;\n\tglobal $trailmgmt_db_version;\n\n\t$table_name = $wpdb->prefix . $sitedatatable;\n\t$charset_collate = $wpdb->get_charset_collate();\n\n\t$sql = \"CREATE TABLE $table_name (\n\t\tid mediumint(9) NOT NULL AUTO_INCREMENT,\n\t\ttitle varchar(200) NOT NULL,\n\t\tsiteslug varchar(200) NOT NULL,\n\t\tcategory varchar(100),\n\t\t`group` varchar(100),\n\t\tdirections text,\n\t\tdescription text,\n\t\tsname varchar(100),\n\t\textwebsite text,\n\t\tgroupslug varchar(200),\n\t\tspecies text,\n\t\thabitats text,\n\t\tcoords varchar(50),\n\t\tlat decimal (11,8) NOT NULL,\n\t\tlon decimal (11,8) NOT NULL,\n\t\tregion varchar(8),\n\t\tboataccess int(1),\n\t\tfee int(1),\n\t\tpicnic int(1),\n\t\thiking int(1),\n\t\ttrailmaps int(1),\n\t\tcamping int(1),\n\t\tvisitor int(1),\n\t\thunting int(1),\n\t\trestrooms int(1),\n\t\thandicap int(1),\n\t\tviewing int(1),\n\t\tboatlaunch int(1),\n\t\tinterpretive int(1),\n\t\tplaceid varchar(255),\n\t\tlocid varchar(255),\n\t\twhat3words varchar(255)\n\t\tPRIMARY KEY  (siteslug)\n\t) $charset_collate;\";\n\n\trequire_once( ABSPATH . 'wp-admin/includes/upgrade.php' );\n\tdbDelta( $sql );\n\n\t//add_option( 'trailmgmt_db_version', $trailmgmt_db_version ); //see comment above\n\n\n}\n\nfunction trailmgmt_install() {\n    // trigger our function that registers the custom post type\n    trailmgmt_setup_site_table();\n \n}\nregister_activation_hook( __FILE__, 'trailmgmt_install' );\n\n\nfunction trailmgmt_deactivate_site_table(){\n\tglobal $wpdb;\n\t//Insert code here to remove the trail site table\n\t$table_name = $wpdb->prefix . $sitedatatable;\n\t$charset_collate = $wpdb->get_charset_collate();\n\n\t$sql = \"DROP TABLE $table_name;\";\n\trequire_once(ABSPATH . 'wp-admin/includes/upgrade.php' );\n\tdbDelta ($sql);\n}\n\nfunction trailmgmt_deactivation() {\n    // trigger our function that registers the custom post type\n    trailmgmt_deactivate_site_table();\n \n}\nregister_deactivation_hook( __FILE__, 'trailmgmt_deactivation' );\n\n\nfunction trailmgmt_get_data() {\n\n\tif(!isset($_POST['dbrequest'])) {\n\t\techo json_encode(array('ncbt_data_success'=>'response_missing'));\n\t\twp_die();\n\n\t} else {\n\n\t}\n\n}\n\n\n\n//Retrieves site data from database\nadd_action( 'wp_ajax_get_trailmgmt_data', 'get_trailmgmt_data' );\nadd_action( 'wp_ajax_nopriv_get_trailmgmt_data', 'get_trailmgmt_data' );\n\nfunction get_trailmgmt_data() {\n\n\tif(!isset($_POST['dbrequest'])) {\n\t\techo json_encode(array('ncbt_data_success'=>'response_missing'));\n\t\twp_die();\n\n\t} else {\n\n\t\t$request = strval( $_POST['dbrequest'] );\n\n\t\t$sitedatatable = \"trailmgmt_sites\";\n\t\tglobal $wpdb;\n\n\t\t// get db login information\n\t\tinclude('trailmgmt_db_info.php');\n\t\t//connect to NCBT Site Data\n\t\t$dbname = \"ncbirdin_a60\";\n\n\t\t// see examples of db connection here: https://codex.wordpress.org/Class_Reference/wpdb\n\n\t    switch ($request) {\n\t    \tcase \"site_list\":\n\n\t\t\t\t//======================================================================\n\t\t\t\t//The following is working code that downloads the most recent ncbt data\n\t\t\t\t//TODO: Rewrite this function to be included in the functions.php get_ncbt_data() function (remove duplication)\n\t\t\t\t//POTENTIAL FUTURE - move this to a CRON JOB that runs each night and creates static js file (if it speeds loading)\n\t\t\t\t//======================================================================\n\n\t   \t\t\tglobal $wpdb;\n\n    \t\t\t$table_name = $wpdb->prefix . $sitedatatable;\n    \t\t\t\n    \t\t\t$results = $wpdb->get_results(\n    \t\t\t\t\"\n    \t\t\t\tSELECT siteslug, title\n    \t\t\t\tFROM \" . $table_name . \"\n    \t\t\t\t\"\n    \t\t\t);\n    \t\t\techo json_encode($results); //return results\n\n\t\t\t\twp_die(); //close DB connection\n\t    \t\tbreak;\n\n\t    \tcase \"test\":\n\t    \t\t//troubleshooting issue...\n\t    \t\techo \"{response:successful test!}\";\n\n\t\t\t\twp_die(); //close DB connection\n\t    \t\tbreak;\n\n\t    \tcase \"site_detail\":\n\t\t\t\t//======================================================================\n\t\t\t\t//The following is working code that downloads the most recent site data\n\t\t\t\t//POTENTIAL FUTURE - move this to a CRON JOB that runs each night and creates static js file (if it speeds loading)\n\t\t\t\t//======================================================================\n\n\t   \t\t\tglobal $wpdb;\n\n    \t\t\t$table_name = $wpdb->prefix . $sitedatatable;\n\t\t\t\t$siteslug = strval( $_POST['slug']); //for some reason, produces error when tag is 'siteslug' - WTF?\n\t\t\t\t$sql = 'SELECT * FROM ' . $table_name . ' WHERE SITESLUG = \"' . $siteslug . '\" LIMIT 1'; //will only return one record\n\n    \t\t\t\n    \t\t\t$results = $wpdb->get_row($sql);\n    \t\t\techo json_encode($results); //return results\n\n\t\t\t\twp_die(); //close DB connection\n\t    \t\tbreak;\n\n\t\t\tcase \"update_site_data\": //UPDATE DATA FROM PASSED PARAMETERS\n    \t\t\tglobal $wpdb;\n\n    \t\t\t$table_name = $wpdb->prefix . $sitedatatable;\n\t\t\t\t\n\t\t\t\t$data = json_decode($_POST['data']);\n\n    \t\t\t$wpdb->update(\n    \t\t\t\t$table_name,\n    \t\t\t\tarray(\n\n    \t\t\t\t)\n    \t\t\t);\n\n    \t\t\tbreak; //end switch code execution\n\n    \t\tcase \"create_new_site\": //create a new site - TESTING - NEEDS WORK\n    \t\t\tglobal $wpdb;\n\n    \t\t\t$table_name = $wpdb->prefix . $sitedatatable;\n\n    \t\t\t$wpdb->insert(\n    \t\t\t\t$table_name,\n    \t\t\t\tarray(\n    \t\t\t\t\t'title' => 'test site',\n    \t\t\t\t\t'siteslug' => 'test-site',\n    \t\t\t\t\t'category' => 'Central Blue Ridge Parkway',\n    \t\t\t\t\t'directions' => 'find us here!'\n    \t\t\t\t)\n    \t\t\t);\n\n\n\n\t\t\t\tbreak; //end switch code evaluation\n\n\t\t\tcase \"delete_site\"://deletes a site\n\t\t\t\t//TO BE DEVELOPED\n\t\t\t\tbreak;\n\n\t\t\tcase \"upload_data_file\": //populate data from a text file\n\t\t\t\t//TO BE DEVELOPED\n\t\t\t\t// ~ delimited?\n\n\t\t\t\tbreak;\n\n\t\t\tcase \"retrieve_data_fields\": //return fields only\n\t\t\t\t//TO BE DEVELOPED\n\n    \t\t\tglobal $wpdb;\n\n    \t\t\t$table_name = $wpdb->prefix . $sitedatatable;\n\n\t\t\t\t$sql = 'SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ' . $table_name;\n\n    \t\t\t\n    \t\t\t$results = $wpdb->query($sql);\n    \t\t\techo $results; //return results\n\n\t\t\t\tbreak;\n\n    \t\tcase \"log_visit\": //post website visit data\n    \t\t\t//NOT WORKING RIGHT NOW, need to create table on plugin installation\n\t\t\t\t$conn = new mysqli($servername, $username, $password, $dbname);\n\t\t\t\t\n\t\t\t\t//data passed from successful geolocation\n\t    \t\t$platform = strval( $_POST['platform']);\n\t    \t\t$browser = strval( $_POST['browser']);\n\t    \t\t$userid = strval( $_POST['ncbtuserid']);\n\t    \t\t$lat = doubleval( $_POST['lat']);\n\t    \t\t$lon = doubleval( $_POST['lon']);\n\n\n\t\t\t\t//$sql = \"INSERT INTO visits (PLATFORM, LAT, LON) VALUES ('test',35,85)\"; //TESTING\n\t\t\t\t$sql = \"INSERT INTO visits (PLATFORM, BROWSER, NCBTUSERID, LAT, LON) VALUES ('\" . $platform . \"', '\" . $browser . \"','\" . $userid . \"',\" . $lat . \",\" . $lon . \")\"; //post data\n\n\t\t\t\tif ($conn->query($sql) === TRUE) {\n\t\t\t\t\techo \"New record created successfully\";\n\t\t\t\t} else {\n\t\t\t\t    echo \"Error: \" . $sql . \"<br>\" . $conn->error;\n\t\t\t\t}\n\t\t\t\t$conn->close();\n\t\t\t\twp_die(); //close db connection\n\t\t\t\tbreak; //end switch code evaluation\n    \t\tdefault:\n    \t\t\techo \"no data\";\n\n\n    \t\t\tbreak;\n\n\t\t\n\t\t}\n\n\t}\n}\n?>\n",
+			"file": "birdingtrailmanagement.php",
+			"file_size": 11779,
+			"file_write_time": 131879262848332420,
+			"settings":
+			{
+				"buffer_size": 11329,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "trailmgmt_db_info.php",
+			"settings":
+			{
+				"buffer_size": 416,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "sites.php",
+			"settings":
+			{
+				"buffer_size": 7663,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "css/trailmgmt.css",
+			"settings":
+			{
+				"buffer_size": 409,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "transfer_data.sql",
+			"settings":
+			{
+				"buffer_size": 791,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 368.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"git quick",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"git add",
+				"Git: Add Current File"
+			],
+			[
+				"git ini",
+				"Git: Init"
+			],
+			[
+				"git comm",
+				"Git: Quick Commit (repo)"
+			],
+			[
+				"git commit",
+				"Set Syntax: Git Commit"
+			],
+			[
+				"",
+				"Bookmarks: Clear All"
+			],
+			[
+				"git change",
+				"Git: Change Branch"
+			],
+			[
+				"branch",
+				"Git: Pull Current Branch"
+			],
+			[
+				"git",
+				"Git: Change Branch"
+			],
+			[
+				"gitad",
+				"Git: Add Current File"
+			],
+			[
+				"git qui",
+				"Git: Quick Commit (repo)"
+			],
+			[
+				"git diff",
+				"Git: Diff Current File (Ignore Whitespace)"
+			],
+			[
+				"git branch",
+				"Git: Change Branch"
+			],
+			[
+				"git bran",
+				"Git: New Branch"
+			],
+			[
+				"git quick co",
+				"Git: Quick Commit (repo)"
+			],
+			[
+				"gitquic",
+				"Git: Quick Commit (repo)"
+			],
+			[
+				"git quick r",
+				"Git: Quick Commit (repo)"
+			],
+			[
+				"git quick\t",
+				"Git: Quick Commit (repo)"
+			],
+			[
+				"GIT commi",
+				"Git: Quick Commit (repo)"
+			],
+			[
+				"git statu",
+				"Git: Status"
+			],
+			[
+				"git push",
+				"Git: Push Current Branch"
+			],
+			[
+				"gitquick",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"git commi",
+				"Git: Commit"
+			],
+			[
+				"git branc",
+				"Git: Change Branch"
+			],
+			[
+				"git br",
+				"Git: New Branch"
+			],
+			[
+				"gitpush",
+				"Git: Push Current Branch"
+			],
+			[
+				"quick",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"git init",
+				"Git: Init"
+			],
+			[
+				"git merge branch",
+				"Git: Merge Branch"
+			],
+			[
+				"git merg",
+				"Git: Merge Branch"
+			],
+			[
+				"git: branch",
+				"Git: Change Branch"
+			],
+			[
+				"git:bran",
+				"Git: New Branch"
+			],
+			[
+				"git comm cu",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"git quu",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"htm",
+				"HTMLBeautify"
+			],
+			[
+				"html",
+				"HTMLBeautify"
+			],
+			[
+				"gitdiff",
+				"Git: Diff Current File"
+			],
+			[
+				"gitcomm",
+				"Git: Commit"
+			],
+			[
+				"git co",
+				"Git: Commit"
+			],
+			[
+				"python curre",
+				"SublimeREPL: Python - RUN current file"
+			],
+			[
+				"repl:pyton",
+				"SublimeREPL: Python - RUN current file"
+			],
+			[
+				"git:qui",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"git:add",
+				"Git: Add Current File"
+			],
+			[
+				"subli",
+				"SublimeREPL: Python"
+			],
+			[
+				"sublim",
+				"SublimeREPL: Python"
+			],
+			[
+				"quicco",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: remove p",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: install",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Remove Package"
+			],
+			[
+				"git quick curr",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"ftp",
+				"FTPSync: Upload current file"
+			],
+			[
+				"git q",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"git commit curr",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"gitgutter",
+				"GitGutter: Compare Against File Commit"
+			],
+			[
+				"package control: install package",
+				"Package Control: Install Package"
+			],
+			[
+				"githist",
+				"Git: Commit history"
+			],
+			[
+				"git stat",
+				"Git: Status"
+			],
+			[
+				"git: add curr",
+				"Git: Add Current File"
+			],
+			[
+				"git: qui",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"python",
+				"SublimeREPL: Python - RUN current file"
+			],
+			[
+				"packa",
+				"Package Control: Install Package"
+			],
+			[
+				"git:push",
+				"Git: Push"
+			],
+			[
+				"git:commit",
+				"Git: Quick Commit (current file)"
+			],
+			[
+				"git: push",
+				"Git: Push"
+			],
+			[
+				"comm",
+				"Git: Commit"
+			],
+			[
+				"GIT",
+				"Git: Commit"
+			],
+			[
+				"repl py",
+				"SublimeREPL: Python"
+			],
+			[
+				"gitco",
+				"Git: Commit"
+			],
+			[
+				"set syntax python",
+				"Set Syntax: Python"
+			]
+		],
+		"width": 428.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/plugins/birdingtrailmanagement/db_info.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/plugins/birdingtrailmanagement/transfer_data.sql",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/plugins/akismet/akismet.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/plugins/hello.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/plugins/birdingtrailmanagement/birdingtrailmanagement.sublime-workspace",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/single.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/front-page.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/style.css",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/js/map.js",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/map.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/functions.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/banner.php",
+		"/C/data/gis_data/ncbt/ncbt_w3w.txt",
+		"/C/Users/andersonsk/AppData/Local/Temp/fz3temp-2/style.css",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/category.php",
+		"/C/data/@admin/budget/bd701/parse_BD701_records.py",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/.gitignore",
+		"/C/data/@admin/computer/backupall.bat",
+		"/C/data/@ad_hoc/20180703_sunday_hunting_gl/Sunday Hunting_Potential List.csv",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/page.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/index.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/db_info.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/plugins/birdingtrailmanagement/birdingtrailmanagement.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/birdwatching.html",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-admin/admin-ajax.php",
+		"/C/data/@nc_birding_trail/website/troubleshooting/error_log",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-config.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/plugins/trail-management/ncbt-trail-management.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/ucom0t2n.p2l.txt",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/db_info_example.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/blog.php",
+		"/C/data/@nc_birding_trail/website/bootstrap/examples-4.0.0/blog/blog.css",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia/single.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia/index.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/z.index-original3.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia/functions.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/home.php",
+		"/C/data/@projects/bbs/63_318_Goldston_data/20180611_Goldston_Stops_coordsonly.csv",
+		"/C/data/@projects/bbs/63_318_Goldston_data/20180611_Goldston_Stops.csv",
+		"/C/data/@projects/bbs/63_318_Goldston_data/log.txt",
+		"/C/data/@nc_birding_trail/website/2018_ncbt_website.sublime-project",
+		"/C/data/@nc_birding_trail/ebird/parse_ebird_records.py",
+		"/J/ebird_data/ebd_relMay-2017.txt.gz",
+		"/C/data/@nc_birding_trail/ebird/results/20180423_1975-2015_NC_ncbt_ebird.csv",
+		"/C/data/@projects/ncpif_ncbt_website_admin/20171220_access_info.txt",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/sidebar.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/footer.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/header.php",
+		"/C/data/@projects/afwa_wvnt_wg/na_survey/birding_trail_list.txt",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/cover.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/header-experiment.php",
+		"/C/data/@projects/@wldp/2018_cohort/c2_applications/C2_work_addresses2.txt",
+		"/C/data/@projects/@wldp/2018_cohort/c2_applications/C2_work_addresses.txt",
+		"/C/data/@nc_partners_in_flight/wiki/site_code/LocalSettings.php",
+		"/C/data/@nc_birding_trail/ebird/results/20180418_1975-2015_NC_ncbt_ebird.csv",
+		"/C/data/@nc_birding_trail/ebird/results/20180418_1975-2015_NC_ncbt_err_log.csv",
+		"/J/ebird_data/checklist python.py",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/bootstrap/css/bootstrap.css.map",
+		"/C/Users/andersonsk/AppData/Roaming/Sublime Text 3/Packages/User/HTMLBeautify.sublime-settings",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/z.bfb.html",
+		"/C/Users/andersonsk/AppData/Roaming/Sublime Text 3/Packages/HTMLBeautify/HTMLBeautify.sublime-settings",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/bfb_data.txt",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/z.footer.html",
+		"/C/data/@nc_partners_in_flight/wiki/site_code/skins/Tweeki/Tweeki.skin.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/functions.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/js/ncbt-sites.js",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/map.css",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/js/page-map.js",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/page-map.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/flexia-child/functions.php",
+		"/C/data/@nc_birding_trail/website/js/geolocation.js",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/pagetemplates/get-ncbt-data.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/pagetemplates/ncbt_dbconnect.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/style.css",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/plugins/trail-management/readme.txt",
+		"/C/Users/andersonsk/AppData/Local/Temp/fz3temp-2/page-map.php",
+		"/C/data/@nc_birding_trail/website/2017_wordpress/wp/wp-content/themes/twentyseventeen-ncbt/js/ncbt_data.js",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/js/ncbt_data.js",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/plugins/ncbt/readme.txt",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/js/infobox.js",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/js/20180227_ncbt_points_static_archive.js",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/20180227_ncbt_points_static.js",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/js/ncbt_data_test.js",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/js/test.js",
+		"/C/data/@nc_birding_trail/website/2017_wordpress/wp/wp-content/themes/x-child/page-map_spareparts.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/page-templates/page-map.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/db_connect.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/page-templates/template-map.php",
+		"/C/data/@nc_birding_trail/website/2017_wordpress/wp/wp-content/themes/x-child/page-map.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/orfeo_parent-child/doteasy_files/page-site.php",
+		"/C/data/@nc_birding_trail/website/2017_wordpress/wp/wp-content/themes/x-child/page-site.php",
+		"/C/data/@nc_birding_trail/ebird/world_nc_checklists.py",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia-child/page-templates/template-pagebuilder-full-width.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/orfeo_parent-child/js/ncbt_data.js",
+		"/C/data/@nc_birding_trail/website/2017_wordpress/wp/wp-content/themes/x-child/key_info.php",
+		"/C/data/@nc_birding_trail/website/ncbt-website-master/html/20180216_map.html",
+		"/C/data/@projects/@wldp/website/C1_R3_details2.html",
+		"/C/data/@ad_hoc/20170606_gator_map/analysis2/Alligator_Occupancy_Script_22Jan2018.R",
+		"/C/data/@ad_hoc/20170606_gator_map/analysis2/Alligator_Nmixture_Script_23Jan2018.R",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/orfeo_parent-child/doteasy_files/header.php",
+		"/C/data/@nc_birding_trail/website/2017_wordpress/wp/wp-content/themes/x-child/functions.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/orfeo_parent-child/doteasy_files/site-data.php",
+		"/C/data/@nc_birding_trail/website/2017_wordpress/wp/20170921_custom_notes",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/orfeo_parent-child/doteasy_files/key_info.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia/header.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/orfeo_parent-child/style.css",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/orfeo_parent-child/functions.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/orfeo/functions.php",
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/sydney/page.php",
+		"/C/data/@nc_birding_trail/ebird/NC_Observer_IDs.csv",
+		"/C/data/@nc_birding_trail/ebird/log.txt",
+		"/C/data/@nc_birding_trail/ebird/World-NC checklists results.csv",
+		"/C/data/@nc_partners_in_flight/wiki/data_import_export/downloaded/Conservation+Connections-20180104220038.xml",
+		"/C/data/@nc_birding_trail/ebird/world nc checklists.py",
+		"/C/data/@nc_partners_in_flight/wiki/site_code/UPGRADE",
+		"/C/data/@nc_partners_in_flight/wiki/wiki/extensions/SemanticMediaWiki/res/smw/ext.smw.css",
+		"/C/data/@nc_partners_in_flight/wiki/wiki/skins/Vector/images/arrow-collapsed-rtl.svg",
+		"/C/data/@nc_partners_in_flight/wiki/site_code/skins/MinervaNeue/gitinfo.json",
+		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpifwiki_ssh",
+		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpifwiki_ssh_pvt.ppk",
+		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpifwk_user-user_password.bin",
+		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpifwiki_ssh.pub",
+		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpif_wiki2.ppk",
+		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpif_wiki.pub",
+		"/C/data/@nc_partners_in_flight/wiki/site_code/20170310_LocalSettings_works.php",
+		"/C/data/@nc_partners_in_flight/wiki/site_code/LocalSettings20171220.php",
+		"/C/data/@nc_birding_trail/website/ncbt-website-master/html/20171202_header.html",
+		"/C/data/@projects/@wldp/website/C1_R3_details.html"
+	],
+	"find":
+	{
+		"height": 41.0
+	},
+	"find_in_files":
+	{
+		"height": 105.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"wpdb",
+			"'trailmgmt_sites'",
+			"site-detail-panel",
+			"NCBT_site_icon",
+			"int(1)",
+			" int(1)",
+			"getW3WAddress",
+			"w3w_key",
+			"updateSiteInfo",
+			"retrievePlaceId",
+			"key",
+			"logging visit location",
+			"blog-pagination",
+			"this.",
+			"birdIds",
+			"ButtonControl",
+			"modal-subsection",
+			"#BIRDS-CARD",
+			"siteData",
+			"populateSightings",
+			"tryGeolocation",
+			"center-map",
+			"map-location",
+			"tryGeolocation",
+			"trygeolocation",
+			"tryGeolocation",
+			"admin-ajax.php",
+			"https://ebird.org/ws2.0/data/obs/geo/recent?lat=",
+			"settings",
+			"clearModalPanel",
+			"display",
+			"collapse",
+			"console.log",
+			"EBIRD",
+			"SPECIES",
+			"json",
+			"MATCH",
+			"getLocID",
+			"console.log",
+			"modal-site-header",
+			"site-modal-header",
+			"<?php",
+			"src",
+			"console.log",
+			"\\n",
+			"pass",
+			"slugs",
+			"sitePopups",
+			"showLabels",
+			"loadMouseListeners",
+			"retrievePlaceId",
+			"retrievePlaceData",
+			"updateSiteInfo",
+			"record updated",
+			"retrievePlaceData",
+			"updateSiteInfo",
+			"siteslug",
+			"updateSiteInfo",
+			"siteslug",
+			"siteslug\t\t",
+			"siteslug",
+			"custom-script",
+			"infobox",
+			"console.log",
+			"loadLabelListeners",
+			"siteIcon",
+			"site-popup",
+			"infowindow",
+			"\t\t\t\t\t$",
+			"siteLabelListeners",
+			"console.log",
+			"infoBox",
+			"$servername",
+			"twitter-button",
+			"modal-title",
+			"console.log",
+			"clearModalPanel",
+			"currLatLng",
+			"/* Bootstrap md breakpoint */\n",
+			"birdingtrail_featuring_posts",
+			"display",
+			"hestia",
+			"post-thumbnails",
+			"\\n",
+			"}{",
+			"\\n",
+			" }",
+			"\\n\\n",
+			" \\n",
+			"\\n \\n",
+			"  ",
+			"^",
+			"\\n",
+			"\\n \\n",
+			"\\n\\n",
+			"\n  \n",
+			"|",
+			"\\n",
+			"\n  \n",
+			"\\n \\n",
+			"\\n\\n",
+			";",
+			"loadListeners",
+			";",
+			"loadListeners",
+			"loadlisteners",
+			"console",
+			"loadListeners",
+			"NAME"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"$sitedatatable",
+			"",
+			"value.",
+			"site_data",
+			"\" OR \"",
+			"\\nsiteLabelListeners",
+			",\\n",
+			"\\n",
+			"~",
+			"}",
+			"}{",
+			"\\n",
+			"}{",
+			" ",
+			"\\n",
+			"~",
+			"^",
+			"\\n",
+			"~",
+			"|",
+			";\\n"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "birdingtrailmanagement.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 11329,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10164,
+								10164
+							]
+						],
+						"settings":
+						{
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 4660.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "trailmgmt_db_info.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 416,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								381,
+								381
+							]
+						],
+						"settings":
+						{
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/PHP/PHP.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "sites.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7663,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3977,
+								3977
+							]
+						],
+						"settings":
+						{
+							"auto_name": "",
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1978.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "css/trailmgmt.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 409,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								407,
+								407
+							]
+						],
+						"settings":
+						{
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/CSS/CSS.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "transfer_data.sql",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 791,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								321,
+								321
+							]
+						],
+						"settings":
+						{
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/SQL/SQL.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 44.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 22.0
+	},
+	"input":
+	{
+		"height": 35.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.git":
+	{
+		"height": 97.0
+	},
+	"output.mdpopups":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "birdtrailmanagementplugin.sublime-project",
+	"replace":
+	{
+		"height": 73.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 592.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 53.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
