@@ -164,129 +164,52 @@
 		"locid":"text",
 		"what3words":"text",
 		"group":"text",
-	}
+	};
 
-    jQuery.ajax({
-        type: "POST",
-        dataType: "json",
-        url: ajaxurl, //url for WP ajax php file, var def added to header in functions.php
-        data: {
-            'action': 'get_trailmgmt_data', //server side function
-            // 'dbrequest': 'site_detail', //request type
-            'dbrequest': 'site_list' //TESTING
-            //'dbrequest': 'test' //TESTING
-        },
-        success: function(data, status) {
-        	//AFTER LIST IS POPULATED, set up events for:
-        	// new site completion, edit existing site, view data, etc.
-        	//place code here to deal with database results
-        	console.log("successful db request");
-            console.log(status);
-            console.log(data);
+	buttonOnColor = 'rgb(68, 68, 68)';
+	buttonOffColor = 'rgb(204, 204, 204)';
 
-            //POPULATE THE SITE LIST PANEL
-            jQuery.each(data,function(index, value) {
-            	//setup variables for each site
-            	var slug = this.siteslug;
-            	var title = this.title;
+	//POPULATE SITE LIST ON LEFT PANEL
+	function populateSiteList() {
+		jQuery('#site-list').empty();
+	    jQuery.ajax({
+	        type: "POST",
+	        dataType: "json",
+	        url: ajaxurl, //url for WP ajax php file, var def added to header in functions.php
+	        data: {
+	            'action': 'get_trailmgmt_data', //server side function
+	            'dbrequest': 'site_list' //TESTING
+	        },
+	        success: function(data, status) {
+	        	//AFTER LIST IS POPULATED, set up events for:
 
-            	jQuery('#site-list').append('<li class="site-list-item" id="' + slug + '">' + title + '</li>');
+	            //POPULATE THE SITE LIST PANEL
+	            jQuery.each(data,function(index, value) {
+	            	//setup variables for each site
+	            	var slug = this.siteslug;
+	            	var title = this.title;
+	            	var id = this.id;
 
-            });
+	            	//jQuery('#site-list').append('<li class="site-list-item" id="' + slug + '">' + title + '</li>');
+	            	jQuery('#site-list').append('<li class="site-list-item" id="' + id + '">' + title + '</li>');
 
-            //SETUP EVENT FOR RETRIEVING AND DISPLAYING SITE DETAIL
-		    jQuery('.site-list-item').click(function(){
-		    	console.log('site-list-item click triggered');
-		    	buildSiteDataForm(this.id); //RETRIEVE SITE DATA, POPULATE FORM
+	            });
+
+	            //SETUP EVENT FOR RETRIEVING AND DISPLAYING SITE DETAIL
+			    jQuery('.site-list-item').click(function(){
+			    	console.log('site-list-item click triggered');
+			    	buildSiteDataForm(this.id); //RETRIEVE SITE DATA, POPULATE FORM
 		    	});
 
-
-		    //TOGGLE EDIT BUTTON (enables and disables fields)
-		    //NEEDS WORK, make sure some fields not editaable (id, coords)
-		    jQuery('#enable-editing').click(function(){
-		    	if (this.text == "Edit" ) {
-		    		jQuery('.site-data-data').removeAttr("disabled");
-		    		this.text = "Stop Editing";
-
-		    	} else {
-		    		jQuery('.site-data-data').attr("disabled","disabled");
-		    		this.text = "Edit";
-
-		    	};
-
-		    	jQuery.ajax({
-		    		type: "POST",
-		    		dataType:"text",
-		    		url:ajaxurl,
-		    		data: {
-			            'action': 'get_trailmgmt_data', //server side function
-			            'dbrequest': 'retrieve_data_fields'
-			        },
-			        success: function(data, status) {
-			        	console.log('retrieved structure!');
-			        	console.log(data);
-			        },
-			        error: function(jqxr,status,exception){
-			          console.log("error db request")
-			          console.log(status + " : " + exception);
-
-			        	
-			        }
-		    	});
-
-		    });
-
-        }, 
-        error: function(jqxhr, status, exception) {
-          console.log("error db request")
-          console.log(status + " : " + exception);
-    	}
-    });
-
-
-
-
-    function setupBlankDataForm(){
-
-    	//LOOP THROUGH DATABASE ITEMS, create blank fields
-
-
-
-	    //SETUP EVENT FOR CREATING A NEW SITE when button clicked
-	    jQuery('#test-new-site').click(function(){
-	    	//testing creating a new site
-
-	    	//collect data from fields, populate jsonrowdata
-	    	var jsonrowdata ={};
-	    	jQuery('.site-data-data').each(function(index, value){
-	    		jsonrowdata[this.id]=this.value;
-	    	});
-	    	console.log(jsonrowdata);
-/*
-	    	jQuery.ajax({
-	    		type:"POST",
-	    		url:ajaxurl,
-	    		data: {
-	    			'action': 'get_trailmgmt_data',
-	    			'dbrequest': 'create_new_site',
-	    			'rowdata': jsonrowdata
-	    		},
-	    		success: function(data,status){
-	    			console.log("successful!");
-	    			console.log(status);
-	    			console.log(data);
-
-	    		},
-		        error: function(jqxhr, status, exception) {
-		          console.log("error db request")
-		          console.log(status + " : " + exception);
-		    	}
-	    	});
-	    	*/
+	        }, 
+	        error: function(jqxhr, status, exception) {
+	          console.log("error db request")
+	          console.log(status + " : " + exception);
+	    	}
 	    });
+	};
 
-    }
-
+    //function buildSiteDataForm(siteslug){
     function buildSiteDataForm(siteslug){
 		//retrieve site info
 		//siteslug = this.id;
@@ -295,6 +218,7 @@
 
 		var bBlank; //flag to indicate if data should be filled 
 		var dbRequest; //variable that determines request type
+		var Disabled; //variable to determine if field is enabled.
 
 		siteslug = siteslug || 'none'; //if siteslug blank - make 'none'
 
@@ -311,16 +235,19 @@
 		    url: ajaxurl, //url for WP ajax php file, var def added to header in functions.php
 		    data: {
 		        'action': 'get_trailmgmt_data', //server side function
-		        'slug': siteslug,
+		        //'slug': siteslug,
+		        'id': siteslug,
 		        'dbrequest': dbRequest //TESTING
 		    },
 		    success: function(data, status) {
 		    	//place code here to deal with database results
 		    	console.log("successful db request")
+		    	console.log(data);
 		        jQuery.each(data,function(index,value){
 		        	//loop through site data, create elements in detail panel for each field
-
-		        	if (bBlank) {value = null}; //blank out values if new blank form requested
+		        	//console.log(index + ":" + value);
+		        	if (bBlank) {value = ""}; //blank out values if new blank form requested
+		        	//console.log(index + ":" + value + ":" + fieldTypes[index]);
 
 		        	var inputType;
 		        	var tagInfo = ''; //extra info to put in tag
@@ -343,12 +270,12 @@
 
 		        	}
 
-
-
 		        	//build and insert item
 		        	jQuery('#site-detail-form').append('<div class="site-data-item"><div class="site-data-heading" id="' + index + '-heading">' + index + '</div><'+ inputTag	+' type="'+ fieldTypes[index] + '" name="' + index + '" class="site-data-data'+inputClass+'" id="' + index +  '" value="' + value + '" ' + tagInfo +' disabled>'+interTagValue+'</'+inputTag+'></div>');
 
 		        });
+
+		        jQuery('#id').css('background','#999'); //turn id field dark to indicate that it cannot be edited
 
 		    }, 
 		    error: function(jqxhr, status, exception) {
@@ -361,47 +288,139 @@
 
     };
 
+    //SET OF FUNCTIONS TO GOVERN BUTTON BEHAVIOR
+    function toggleButton(button){
+    	console.log("toggle triggered");
+    	//console.log(this);
+    	//console.log(button);
+    	console.log("BEFORE TOGGLE - button color: " + jQuery(button).css('color') + " buttonOnColor: " + buttonOnColor + " buttonOffColor: " + buttonOffColor);
+    	if (readButton(button)) {
+    		//button enabled, disable it.
+    		disableButton(button);
+    	} else {
+			enableButton(button);
+    	}
+    	console.log("AFTER TOGGLE - button color: " + jQuery(button).css('color') + " buttonOnColor: " + buttonOnColor + " buttonOffColor: " + buttonOffColor);
+    };
+
+    function disableButton(button){jQuery(button).css('color', buttonOffColor);}
+
+    function enableButton(button){jQuery(button).css('color', buttonOnColor);}
+
+    function readButton(button){
+    	//reads if button on or off
+    	if (jQuery(button).css('color')==buttonOnColor) {
+    		//button on
+    		return true;
+   			console.log(jQuery(button).attr('id') + " button is on");
+    	} else {
+   			console.log(jQuery(button).attr('id') + " button is off");
+    		return false;
+    	}
+
+    };
+
+
     //run these after document loads
     jQuery(document).ready(function() {
+    	console.log("document ready");
 
+    	//populate site list
+    	populateSiteList();
 
     	//click events
-    	jQuery('site-detail-new').click(function(){
+    	jQuery('#site-detail-new').click(function(){
     		console.log("new clicked");
     		buildSiteDataForm(); // build blank data form
 
     	});
     	
     	//enable editing of fields
-    	jQuery('site-detail-edit').click(function(){
+    	jQuery('#site-detail-edit').click(function(){
     		console.log("edit clicked");
 
+    		if (readButton(this)){
+    			//edit button is enabled, click to enable fields
+    			jQuery('.site-data-data').removeAttr("disabled");
+    			jQuery('#id').attr("disabled","disabled"); //always keep id field disabled
+ 
+    		} else {
+    			//editing button is disabled, click to disable fields
 
-	    	if (this.text == "Edit" ) {
-	    		jQuery('.site-data-data').removeAttr("disabled");
-	    		this.text = "Stop Editing";
+    			jQuery('.site-data-data').attr("disabled","disabled");
+  			
+    		}
+    		//console.log(this);
+    		toggleButton(this);
 
-	    	} else {
-	    		jQuery('.site-data-data').attr("disabled","disabled");
-	    		this.text = "Edit";
-
-	    	};
     	});
-    	jQuery('site-detail-clear').click(function(){
+    	jQuery('#site-detail-clear').click(function(){
     		console.log("clear clicked");
     		buildSiteDataForm();
+    		jQuery('#site-detail-edit').trigger('click'); //trigger the click event to enable editing
 
     	});
-    	jQuery('site-detail-delete').click(function(){
+    	jQuery('#site-detail-delete').click(function(){
     		// BUILD FUNCTION TO DELETE RECORD
     		console.log("delete clicked");
+    		id = jQuery("#id").attr('value');
+
+			jQuery.ajax({
+			    type: "POST",
+			    dataType: "json",
+			    url: ajaxurl, //url for WP ajax php file, var def added to header in functions.php
+			    data: {
+			        'action': 'get_trailmgmt_data', //server side function
+			        'id': id,
+			        'dbrequest': 'delete_site' //TESTING
+			    },
+			    success: function(data, status) {
+			    	console.log("delete successful");
+				    console.log(status + " : " + data);
+				    populateSiteList(); //refresh the list
+			    },
+			    error: function(jqxhr, status, exception) {
+			      console.log("error db request")
+			      console.log(status + " : " + exception);
+				}
+			});
+
+
 
     	});
 
     	//save existing data
-    	jQuery('site-detail-save').click(function(){
+    	jQuery('#site-detail-save').click(function(){
     		//BUILD FUNCTION TO SAVE RECORD
     		console.log("save clicked");
+    		//check to see if id blank (if so, new record)
+    		if (jQuery('#id').attr('value').length>0) {
+
+				console.log("saving existing record");	
+
+    		} else {
+				//create new record
+				console.log("creating new record");	
+				jQuery.ajax({
+				    type: "POST",
+				    dataType: "json",
+				    url: ajaxurl, //url for WP ajax php file, var def added to header in functions.php
+				    data: {
+				        'action': 'get_trailmgmt_data', //server side function
+				        'dbrequest': 'create_new_site' //TESTING
+				    },
+				    success: function(data, status) {
+				    	console.log("new site successful");
+					    console.log(status + " : " + data);
+					    populateSiteList(); //refresh the list
+				    },
+				    error: function(jqxhr, status, exception) {
+				      console.log("error db request")
+				      console.log(status + " : " + exception);
+					}
+				});
+
+    		}
     	});
 
 

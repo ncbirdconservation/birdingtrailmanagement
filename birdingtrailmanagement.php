@@ -288,7 +288,7 @@ function get_trailmgmt_data() {
     			
     			$results = $wpdb->get_results(
     				"
-    				SELECT siteslug, title
+    				SELECT siteslug, title, id
     				FROM " . $table_name . "
     				"
     			);
@@ -313,8 +313,10 @@ function get_trailmgmt_data() {
 	   			global $wpdb;
 
     			$table_name = $wpdb->prefix . $sitedatatable;
-				$siteslug = strval( $_POST['slug']); //for some reason, produces error when tag is 'siteslug' - WTF?
-				$sql = 'SELECT * FROM ' . $table_name . ' WHERE SITESLUG = "' . $siteslug . '" LIMIT 1'; //will only return one record
+				//$siteslug = strval( $_POST['slug']); //for some reason, produces error when tag is 'siteslug' - WTF?
+				$id = strval( $_POST['id']); //for some reason, produces error when tag is 'siteslug' - WTF?
+				//$sql = 'SELECT * FROM ' . $table_name . ' WHERE SITESLUG = "' . $siteslug . '" LIMIT 1'; //will only return one record
+				$sql = 'SELECT * FROM ' . $table_name . ' WHERE ID = "' . $id . '" LIMIT 1'; //will only return one record
 
     			
     			$results = $wpdb->get_row($sql);
@@ -344,23 +346,38 @@ function get_trailmgmt_data() {
 
     			$table_name = $wpdb->prefix . $sitedatatable;
 
+				$date = new \DateTime('now');
+
     			$wpdb->insert(
     				$table_name,
     				array(
-    					'title' => 'test site',
+    					//'title' => 'test site ' . $date,
+    					'title' => 'test site ',
     					'siteslug' => 'test-site',
     					'category' => 'Central Blue Ridge Parkway',
-    					'directions' => 'find us here!'
+    					'directions' => $date //testing
     				)
     			);
 
 
 
-				break; //end switch code evaluation
 
 			case "delete_site"://deletes a site
 				//TO BE DEVELOPED
-				break;
+				break; //end switch code evaluationglobal $wpdb;
+
+    			$table_name = $wpdb->prefix . $sitedatatable;
+    			$id = json_decode($_POST['id']);
+
+    			$wpdb->delete(
+    				$table_name,
+    				array(
+    					'id' => $id
+    				)
+    			);
+
+    			echo $id . ' DELETED!';
+				break; //end switch code evaluation
 
 			case "upload_data_file": //populate data from a text file
 				//TO BE DEVELOPED
@@ -368,19 +385,15 @@ function get_trailmgmt_data() {
 
 				break;
 
-			case "retrieve_data_fields": //return fields only
-				//TO BE DEVELOPED - return first record in table
+			case "retrieve_data_fields": //return 1 record only for creating data entry form
 	   			global $wpdb;
 
     			$table_name = $wpdb->prefix . $sitedatatable;
+				//$siteslug = strval( $_POST['slug']); //for some reason, produces error when tag is 'siteslug' - WTF?
+				$sql = 'SELECT * FROM ' . $table_name . ' LIMIT 1'; //will only return one record
+
     			
-    			$results = $wpdb->get_results(
-    				"
-    				SELECT *
-    				FROM " . $table_name . "
-    				LIMIT 1"
-    				
-    			);
+    			$results = $wpdb->get_row($sql);
     			echo json_encode($results); //return results
 
 				wp_die(); //close DB connection
