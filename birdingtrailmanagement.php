@@ -99,19 +99,9 @@ function birdingtrail_add_pages() {
 
 }
 
-//Adds ajaxurl variable to JS on pages, used in ajax calls
-/* NOT NEEDED? Already loaded in functions.php?
-add_action('wp_head','pluginname_ajaxurl');
-function pluginname_ajaxurl() {
-	?>
-	<script type="text/javascript">
-		var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
-	</script>
-	<?php
-}
-*/
 
 function trailmgmt_menu() {
+	//builds trail mgmt menu
 	if ( !current_user_can( 'manage_options' ) )  {
 		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 	}
@@ -120,29 +110,6 @@ function trailmgmt_menu() {
 	echo '</div>';
 
 }
-
-/* SITES MENU */
-/*
-function trailmgmt_sites_menu() {
-	if ( !current_user_can( 'manage_options' ) )  {
-		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
-	}
-	//start HTML for site menu
-	?>
-	<div class="wrap">
-		<ul class="list-group">
-		  <li class="list-group-item" style="width:100%;border:">testing again</li>
-		  <li class="list-group-item">test site 3</li>
-		  <li class="list-group-item">Morbi leo risus</li>
-		  <li class="list-group-item">Porta ac consectetur ac</li>
-		  <li class="list-group-item">Vestibulum at eros</li>
-		</ul>		
-	</div>
-
-	<?php //end HTML for form, back to php 
-	
-}
-*/
 
 /* ====================================================================
 * Plugin Activation
@@ -162,6 +129,8 @@ function trailmgmt_setup_site_table(){
 	$table_name = $wpdb->prefix . $sitedatatable;
 	$charset_collate = $wpdb->get_charset_collate();
 
+	//CONSIDER REVISION, REMOVING UNEEDED FIELDS
+	// group, coords, others? change primary key to id?
 	$sql = "CREATE TABLE $table_name (
 		id mediumint(9) NOT NULL AUTO_INCREMENT,
 		title varchar(200) NOT NULL,
@@ -208,6 +177,11 @@ function trailmgmt_setup_site_table(){
 
 function trailmgmt_install() {
     // trigger our function that registers the custom post type
+	//==============================================================
+	//TODO
+	// - add visit table also
+	// - add businesses table
+
     trailmgmt_setup_site_table();
  
 }
@@ -252,6 +226,10 @@ add_action( 'wp_ajax_get_trailmgmt_data', 'get_trailmgmt_data' );
 add_action( 'wp_ajax_nopriv_get_trailmgmt_data', 'get_trailmgmt_data' );
 
 function get_trailmgmt_data() {
+	//==================================================================
+	//TODO
+	// - test data retrieval from front end pages
+	// - test visit table write
 
 	if(!isset($_POST['dbrequest'])) {
 		echo json_encode(array('ncbt_data_success'=>'response_missing'));
@@ -275,7 +253,7 @@ function get_trailmgmt_data() {
 	    	case "site_list":
 
 				//======================================================================
-				//The following is working code that downloads the most recent ncbt data
+				//The following is working code that downloads the most recent trail site data
 				//TODO: Rewrite this function to be included in the functions.php get_ncbt_data() function (remove duplication)
 				//POTENTIAL FUTURE - move this to a CRON JOB that runs each night and creates static js file (if it speeds loading)
 				//======================================================================
@@ -303,17 +281,14 @@ function get_trailmgmt_data() {
 	    		break;
 
 	    	case "site_detail":
-				//======================================================================
-				//The following is working code that downloads the most recent site data
-				//POTENTIAL FUTURE - move this to a CRON JOB that runs each night and creates static js file (if it speeds loading)
-				//======================================================================
+				//==============================================================================================
+				//The following is working code that downloads the most recent complete site data for passed id
+				//==============================================================================================
 
 	   			global $wpdb;
 
     			$table_name = $wpdb->prefix . $sitedatatable;
-				//$siteslug = strval( $_POST['slug']); //for some reason, produces error when tag is 'siteslug' - WTF?
 				$id = strval( $_POST['id']); //for some reason, produces error when tag is 'siteslug' - WTF?
-				//$sql = 'SELECT * FROM ' . $table_name . ' WHERE SITESLUG = "' . $siteslug . '" LIMIT 1'; //will only return one record
 				$sql = 'SELECT * FROM ' . $table_name . ' WHERE ID = "' . $id . '" LIMIT 1'; //will only return one record
 
     			
@@ -323,7 +298,11 @@ function get_trailmgmt_data() {
 				wp_die(); //close DB connection
 	    		break;
 
-			case "update_site_data": //UPDATE DATA FROM PASSED PARAMETERS
+			case "update_site_data": 
+				//==============================================================================================
+				//UPDATE SITE DATA FROM PASSED PARAMETERS
+				//for passed id
+
     			global $wpdb;
 
     			$table_name = $wpdb->prefix . $sitedatatable;
@@ -365,7 +344,10 @@ function get_trailmgmt_data() {
 
     			break; //end switch code execution
 
-    		case "create_new_site": //create a new site - TESTING - NEEDS WORK
+    		case "create_new_site":
+				//==============================================================================================
+    			// CREATE NEW SITE RECORD FROM PASSED DATA
+
     			global $wpdb;
 
     			$table_name = $wpdb->prefix . $sitedatatable;
@@ -407,7 +389,9 @@ function get_trailmgmt_data() {
     			echo $results;
 
 			case "delete_site"://deletes a site
-
+				//==============================================================================================
+				//DELETE SITE RECORD FROM PASSED id field
+			
     			$table_name = $wpdb->prefix . $sitedatatable;
     			$id = json_decode($_POST['id']);
 
@@ -422,25 +406,21 @@ function get_trailmgmt_data() {
 				break; //end switch code evaluation
 
 			case "upload_data_file": //populate bulk data from a text file
+				//==============================================================================================
 				//TO BE DEVELOPED
 				// ~ delimited?
 				// HOW TO AUTOMATE THIS?
 
 				break;
 
-			case "retrieve_data_fields": //return 1 record only for creating data entry form
-	   			global $wpdb;
+			case "download_data_file":
+				//==============================================================================================
+				//download bulk data to a text file
+				//TO BE DEVELOPED
+				// ~ delimited?
+				// HOW TO AUTOMATE THIS?
 
-    			$table_name = $wpdb->prefix . $sitedatatable;
-				//$siteslug = strval( $_POST['slug']); //for some reason, produces error when tag is 'siteslug' - WTF?
-				$sql = 'SELECT * FROM ' . $table_name . ' LIMIT 1'; //will only return one record
-
-    			
-    			$results = $wpdb->get_row($sql);
-    			echo json_encode($results); //return results
-
-				wp_die(); //close DB connection
-	    		break;
+				break;
 
     		case "log_visit": //post website visit data
     			//NOT WORKING RIGHT NOW, need to create table on plugin installation
@@ -465,6 +445,7 @@ function get_trailmgmt_data() {
 				$conn->close();
 				wp_die(); //close db connection
 				break; //end switch code evaluation
+
     		default:
     			echo "no data";
 
