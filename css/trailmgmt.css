@@ -17,8 +17,105 @@ License URI: http://creativecommons.org/licenses/by-sa/3.0/
 */
 
 .site-list-item {
-	color:#aaaaaa;
+	font-weight: 600;
 	border-color:#333333;
 	border-width:0.5rem;
+}
+
+.site-list-data {
+	display:none;
+}
+
+.site-list-panel {
+	border-color:#777;
+	position:fixed;
+	width: 15rem;
+	height:80vh;
+	overflow-y:scroll;
+	background-color:#ddd;
+}
+
+#site-detail-panel {
+	margin-left:16rem;
+	margin-right:1rem;
+}
+#site-detail-form {
+	height:80vh;
+	position:fixed;
+	overflow-y:scroll;
 	
 }
+
+.site-list-item {
+	cursor:pointer;
+	padding:0.2rem 0.4rem;
+}
+.site-list-item:hover {
+	background:#777;
+	color:#fff;
+}
+
+.site-data-item {
+	display:block;
+
+}
+.site-data-heading {
+	padding: 0.2rem;
+	margin-right:0.3rem;
+	height:100%;
+	display:inline;
+    font-variant: small-caps;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.site-data-data {
+	width:100%;
+	display:inline;
+}
+.site-data-textarea {
+	height:10rem;
+	width:100%;
+
+}
+#plugin-header-wrapper {
+	width:100%;
+	padding:0.6rem 0rem ;
+}
+#plugin-header {
+	display:block;
+	font-size:1.2rem;
+	font-weight:700;
+}
+#plugin-subheader {
+	font-size:1rem;
+	font-style:italic;
+	display:block;
+}
+
+#site-detail-button-wrapper {
+	width:100%;
+	padding:0.2rem;
+	border-style:solid;
+	border-color:#333;
+	border-width:0.1rem;
+	border-radius:0.2rem;
+}
+
+.fas {
+	cursor:pointer;
+}
+
+#site-detail-new,
+#site-detail-edit,
+#site-detail-delete,
+#site-detail-copy,
+#site-detail-clear,
+#site-detail-save {
+	font-size:1.2rem;
+	padding:0rem 0.4rem;
+	display:inline;
+}
+
+#site-detail-clear{
+	float:right;

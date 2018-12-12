@@ -4,6 +4,18 @@
 		"selected_items":
 		[
 			[
+				"this",
+				"this\t<?php $this->… ?>"
+			],
+			[
+				"wp_enqu",
+				"wp_enqueue_script"
+			],
+			[
+				"site-detail-",
+				"site-detail-clear"
+			],
+			[
 				"edi",
 				"enable-editing"
 			],
@@ -192,21 +204,10 @@
 	"buffers":
 	[
 		{
-			"contents": "<?php\n\n/*\nPlugin Name:  Birding Trail Management\nPlugin URI:   https://developer.wordpress.org/plugins/birdingtrailmanagement/\nDescription:  For managing nature trail site information, pairs with birdingtrail theme\nVersion:      0.1\nAuthor:       Scott Anderson, ncbirdconservation\nAuthor URI:   https://ncbirdingtrail.org\nLicense:      GPL2\nLicense URI:  https://www.gnu.org/licenses/gpl-2.0.html\nText Domain:  wporg\nDomain Path:  /languages\n*/\n\n//prevents direct access\ndefined( 'ABSPATH' ) or die( 'No script kiddies please!' );\n\n/* ====================================================================\n* Setup\n*/\n\nfunction trailmgmt_load_scripts ($hook) {\n\tif ($hook != 'sites.php') { return;}\n/*\n\twp_register_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');\n\twp_enqueue_style('font-awesome');\n*/\n\twp_register_style('trailmgmt', dirname( __FILE__ ) . '/css/trailmgmt.css');\n\twp_enqueue_style('trailmgmt');\n/*\n\twp_enqueue_style('bootstrap', dirname( __FILE__ ) . '/bootstrap/css/bootstrap.css');\n\twp_enqueue_style('parent-style', dirname( __FILE__ )  . '/style.css',array('bootstrap'));\n\twp_enqueue_script( 'bootstrap-js', dirname( __FILE__ )  . '/bootstrap/js/bootstrap.min.js', array( 'jquery' ), '4.0.0', false );\n*/\t\n};\n\nadd_action( 'admin_enqueue_scripts', 'trailmgmt_load_scripts' );\n/*\nadd_action( 'wp_enqueue_scripts', 'trailmgmt_load_scripts' );\n*/\n\n/* ====================================================================\n* Creates Menu for Managing Trail Data\n*/\n\n\n\n//hook for adding admin menus\nadd_action('admin_menu','birdingtrail_add_pages');\n\nfunction birdingtrail_add_pages() {\n\n\t$page_title = 'Trail Management';\n\t$menu_title = 'Trail Management';\n\t$capability = 'manage_options';\n\t$menu_slug = 'trail-management';\n\t//$function = trail_management_menu();\n\n\t//top menu\n\t//add_menu_page( $page_title, $menu_title, $capability, $menu_slug, trail_management_menu());\n\tadd_menu_page( \n\t\t$page_title,\n\t\t$menu_title,\n\t\t$capability,\n\t\t$menu_slug,\n\t\t'trailmgmt_menu'\n\t);\n\n//\t\tplugins_url('birdingtrailmanagement/img/favicon.ico'), //TESTING\n\t//sub-menu (setup)\n\t//plugin function, reference theme to use\n\t//import functions\n\t//descriptions (fields in each table, etc.)\n\t//$submenu_setup_slug = 'setup';\n\t//add_submenu_page($menu_slug,'Setup','Setup',$capability,$submenu_setup_slug);\n\n\t//sub-menu (trail sites)\n\t// forms for data entry, table of existing sites\n\t\n\t$submenu_trailsites_slug = 'trail-sites';\n\tadd_submenu_page(\n\t\t$menu_slug,\n\t\t'Trail Sites',\n\t\t'Trail Sites',\n\t\t$capability,\n\t\tplugin_dir_path( __FILE__ ) . 'sites.php',\n\t\tnull\n\t);\n\n\t/* FUTURE MENUS\n\t//sub-menu (businesses)\n\t$submenu_business_slug = 'businesses';\n\tadd_submenu_page($menu_slug,$submenu_business_slug,$capability,$menu_slug);\n\n\n\t//sub-menu (visits)\n\t$submenu_visits_slug = 'visits';\n\tadd_submenu_page($menu_slug,$submenu_visits_slug,$capability,$menu_slug);\n\t*/\n\n}\n\n//Adds ajaxurl variable to JS on pages, used in ajax calls\n/* NOT NEEDED? Already loaded in functions.php?\nadd_action('wp_head','pluginname_ajaxurl');\nfunction pluginname_ajaxurl() {\n\t?>\n\t<script type=\"text/javascript\">\n\t\tvar ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';\n\t</script>\n\t<?php\n}\n*/\n\nfunction trailmgmt_menu() {\n\tif ( !current_user_can( 'manage_options' ) )  {\n\t\twp_die( __( 'You do not have sufficient permissions to access this page.' ) );\n\t}\n\techo '<div class=\"wrap\">';\n\techo '<p>Here is where the form would go if I actually had options.</p>';\n\techo '</div>';\n\n}\n\n/* SITES MENU */\n/*\nfunction trailmgmt_sites_menu() {\n\tif ( !current_user_can( 'manage_options' ) )  {\n\t\twp_die( __( 'You do not have sufficient permissions to access this page.' ) );\n\t}\n\t//start HTML for site menu\n\t?>\n\t<div class=\"wrap\">\n\t\t<ul class=\"list-group\">\n\t\t  <li class=\"list-group-item\" style=\"width:100%;border:\">testing again</li>\n\t\t  <li class=\"list-group-item\">test site 3</li>\n\t\t  <li class=\"list-group-item\">Morbi leo risus</li>\n\t\t  <li class=\"list-group-item\">Porta ac consectetur ac</li>\n\t\t  <li class=\"list-group-item\">Vestibulum at eros</li>\n\t\t</ul>\t\t\n\t</div>\n\n\t<?php //end HTML for form, back to php \n\t\n}\n*/\n\n/* ====================================================================\n* Plugin Activation\n* Creates table(s) to store site data, visit data, and business data\n*/\n\n/* VERSIONING - good idea, but disabled for debugging\nglobal $trailmgmt_db_version;\n$trailmgmt_db_version = '0.1';\n*/\nfunction trailmgmt_setup_site_table(){\n\t//Insert code here to set up the trail site table\n\n\tglobal $wpdb;\n\tglobal $trailmgmt_db_version;\n\n\t$table_name = $wpdb->prefix . $sitedatatable;\n\t$charset_collate = $wpdb->get_charset_collate();\n\n\t$sql = \"CREATE TABLE $table_name (\n\t\tid mediumint(9) NOT NULL AUTO_INCREMENT,\n\t\ttitle varchar(200) NOT NULL,\n\t\tsiteslug varchar(200) NOT NULL,\n\t\tcategory varchar(100),\n\t\t`group` varchar(100),\n\t\tdirections text,\n\t\tdescription text,\n\t\tsname varchar(100),\n\t\textwebsite text,\n\t\tgroupslug varchar(200),\n\t\tspecies text,\n\t\thabitats text,\n\t\tcoords varchar(50),\n\t\tlat decimal (11,8) NOT NULL,\n\t\tlon decimal (11,8) NOT NULL,\n\t\tregion varchar(8),\n\t\tboataccess int(1),\n\t\tfee int(1),\n\t\tpicnic int(1),\n\t\thiking int(1),\n\t\ttrailmaps int(1),\n\t\tcamping int(1),\n\t\tvisitor int(1),\n\t\thunting int(1),\n\t\trestrooms int(1),\n\t\thandicap int(1),\n\t\tviewing int(1),\n\t\tboatlaunch int(1),\n\t\tinterpretive int(1),\n\t\tplaceid varchar(255),\n\t\tlocid varchar(255),\n\t\twhat3words varchar(255)\n\t\tPRIMARY KEY  (siteslug)\n\t) $charset_collate;\";\n\n\trequire_once( ABSPATH . 'wp-admin/includes/upgrade.php' );\n\tdbDelta( $sql );\n\n\t//add_option( 'trailmgmt_db_version', $trailmgmt_db_version ); //see comment above\n\n\n}\n\nfunction trailmgmt_install() {\n    // trigger our function that registers the custom post type\n    trailmgmt_setup_site_table();\n \n}\nregister_activation_hook( __FILE__, 'trailmgmt_install' );\n\n\nfunction trailmgmt_deactivate_site_table(){\n\tglobal $wpdb;\n\t//Insert code here to remove the trail site table\n\t$table_name = $wpdb->prefix . $sitedatatable;\n\t$charset_collate = $wpdb->get_charset_collate();\n\n\t$sql = \"DROP TABLE $table_name;\";\n\trequire_once(ABSPATH . 'wp-admin/includes/upgrade.php' );\n\tdbDelta ($sql);\n}\n\nfunction trailmgmt_deactivation() {\n    // trigger our function that registers the custom post type\n    trailmgmt_deactivate_site_table();\n \n}\nregister_deactivation_hook( __FILE__, 'trailmgmt_deactivation' );\n\n\nfunction trailmgmt_get_data() {\n\n\tif(!isset($_POST['dbrequest'])) {\n\t\techo json_encode(array('ncbt_data_success'=>'response_missing'));\n\t\twp_die();\n\n\t} else {\n\n\t}\n\n}\n\n\n\n//Retrieves site data from database\nadd_action( 'wp_ajax_get_trailmgmt_data', 'get_trailmgmt_data' );\nadd_action( 'wp_ajax_nopriv_get_trailmgmt_data', 'get_trailmgmt_data' );\n\nfunction get_trailmgmt_data() {\n\n\tif(!isset($_POST['dbrequest'])) {\n\t\techo json_encode(array('ncbt_data_success'=>'response_missing'));\n\t\twp_die();\n\n\t} else {\n\n\t\t$request = strval( $_POST['dbrequest'] );\n\n\t\t$sitedatatable = \"trailmgmt_sites\";\n\t\tglobal $wpdb;\n\n\t\t// get db login information\n\t\tinclude('trailmgmt_db_info.php');\n\t\t//connect to NCBT Site Data\n\t\t$dbname = \"ncbirdin_a60\";\n\n\t\t// see examples of db connection here: https://codex.wordpress.org/Class_Reference/wpdb\n\n\t    switch ($request) {\n\t    \tcase \"site_list\":\n\n\t\t\t\t//======================================================================\n\t\t\t\t//The following is working code that downloads the most recent ncbt data\n\t\t\t\t//TODO: Rewrite this function to be included in the functions.php get_ncbt_data() function (remove duplication)\n\t\t\t\t//POTENTIAL FUTURE - move this to a CRON JOB that runs each night and creates static js file (if it speeds loading)\n\t\t\t\t//======================================================================\n\n\t   \t\t\tglobal $wpdb;\n\n    \t\t\t$table_name = $wpdb->prefix . $sitedatatable;\n    \t\t\t\n    \t\t\t$results = $wpdb->get_results(\n    \t\t\t\t\"\n    \t\t\t\tSELECT siteslug, title\n    \t\t\t\tFROM \" . $table_name . \"\n    \t\t\t\t\"\n    \t\t\t);\n    \t\t\techo json_encode($results); //return results\n\n\t\t\t\twp_die(); //close DB connection\n\t    \t\tbreak;\n\n\t    \tcase \"test\":\n\t    \t\t//troubleshooting issue...\n\t    \t\techo \"{response:successful test!}\";\n\n\t\t\t\twp_die(); //close DB connection\n\t    \t\tbreak;\n\n\t    \tcase \"site_detail\":\n\t\t\t\t//======================================================================\n\t\t\t\t//The following is working code that downloads the most recent site data\n\t\t\t\t//POTENTIAL FUTURE - move this to a CRON JOB that runs each night and creates static js file (if it speeds loading)\n\t\t\t\t//======================================================================\n\n\t   \t\t\tglobal $wpdb;\n\n    \t\t\t$table_name = $wpdb->prefix . $sitedatatable;\n\t\t\t\t$siteslug = strval( $_POST['slug']); //for some reason, produces error when tag is 'siteslug' - WTF?\n\t\t\t\t$sql = 'SELECT * FROM ' . $table_name . ' WHERE SITESLUG = \"' . $siteslug . '\" LIMIT 1'; //will only return one record\n\n    \t\t\t\n    \t\t\t$results = $wpdb->get_row($sql);\n    \t\t\techo json_encode($results); //return results\n\n\t\t\t\twp_die(); //close DB connection\n\t    \t\tbreak;\n\n\t\t\tcase \"update_site_data\": //UPDATE DATA FROM PASSED PARAMETERS\n    \t\t\tglobal $wpdb;\n\n    \t\t\t$table_name = $wpdb->prefix . $sitedatatable;\n\t\t\t\t\n\t\t\t\t$data = json_decode($_POST['data']);\n\n    \t\t\t$wpdb->update(\n    \t\t\t\t$table_name,\n    \t\t\t\tarray(\n\n    \t\t\t\t)\n    \t\t\t);\n\n    \t\t\tbreak; //end switch code execution\n\n    \t\tcase \"create_new_site\": //create a new site - TESTING - NEEDS WORK\n    \t\t\tglobal $wpdb;\n\n    \t\t\t$table_name = $wpdb->prefix . $sitedatatable;\n\n    \t\t\t$wpdb->insert(\n    \t\t\t\t$table_name,\n    \t\t\t\tarray(\n    \t\t\t\t\t'title' => 'test site',\n    \t\t\t\t\t'siteslug' => 'test-site',\n    \t\t\t\t\t'category' => 'Central Blue Ridge Parkway',\n    \t\t\t\t\t'directions' => 'find us here!'\n    \t\t\t\t)\n    \t\t\t);\n\n\n\n\t\t\t\tbreak; //end switch code evaluation\n\n\t\t\tcase \"delete_site\"://deletes a site\n\t\t\t\t//TO BE DEVELOPED\n\t\t\t\tbreak;\n\n\t\t\tcase \"upload_data_file\": //populate data from a text file\n\t\t\t\t//TO BE DEVELOPED\n\t\t\t\t// ~ delimited?\n\n\t\t\t\tbreak;\n\n\t\t\tcase \"retrieve_data_fields\": //return fields only\n\t\t\t\t//TO BE DEVELOPED\n\n    \t\t\tglobal $wpdb;\n\n    \t\t\t$table_name = $wpdb->prefix . $sitedatatable;\n\n\t\t\t\t$sql = 'SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ' . $table_name;\n\n    \t\t\t\n    \t\t\t$results = $wpdb->query($sql);\n    \t\t\techo $results; //return results\n\n\t\t\t\tbreak;\n\n    \t\tcase \"log_visit\": //post website visit data\n    \t\t\t//NOT WORKING RIGHT NOW, need to create table on plugin installation\n\t\t\t\t$conn = new mysqli($servername, $username, $password, $dbname);\n\t\t\t\t\n\t\t\t\t//data passed from successful geolocation\n\t    \t\t$platform = strval( $_POST['platform']);\n\t    \t\t$browser = strval( $_POST['browser']);\n\t    \t\t$userid = strval( $_POST['ncbtuserid']);\n\t    \t\t$lat = doubleval( $_POST['lat']);\n\t    \t\t$lon = doubleval( $_POST['lon']);\n\n\n\t\t\t\t//$sql = \"INSERT INTO visits (PLATFORM, LAT, LON) VALUES ('test',35,85)\"; //TESTING\n\t\t\t\t$sql = \"INSERT INTO visits (PLATFORM, BROWSER, NCBTUSERID, LAT, LON) VALUES ('\" . $platform . \"', '\" . $browser . \"','\" . $userid . \"',\" . $lat . \",\" . $lon . \")\"; //post data\n\n\t\t\t\tif ($conn->query($sql) === TRUE) {\n\t\t\t\t\techo \"New record created successfully\";\n\t\t\t\t} else {\n\t\t\t\t    echo \"Error: \" . $sql . \"<br>\" . $conn->error;\n\t\t\t\t}\n\t\t\t\t$conn->close();\n\t\t\t\twp_die(); //close db connection\n\t\t\t\tbreak; //end switch code evaluation\n    \t\tdefault:\n    \t\t\techo \"no data\";\n\n\n    \t\t\tbreak;\n\n\t\t\n\t\t}\n\n\t}\n}\n?>\n",
 			"file": "birdingtrailmanagement.php",
-			"file_size": 11779,
-			"file_write_time": 131879262848332420,
 			"settings":
 			{
-				"buffer_size": 11329,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "trailmgmt_db_info.php",
-			"settings":
-			{
-				"buffer_size": 416,
+				"buffer_size": 12081,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -215,7 +216,7 @@
 			"file": "sites.php",
 			"settings":
 			{
-				"buffer_size": 7663,
+				"buffer_size": 21159,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -224,7 +225,7 @@
 			"file": "css/trailmgmt.css",
 			"settings":
 			{
-				"buffer_size": 409,
+				"buffer_size": 1691,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -234,6 +235,15 @@
 			"settings":
 			{
 				"buffer_size": 791,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "trailmgmt_db_info.php",
+			"settings":
+			{
+				"buffer_size": 416,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -250,6 +260,14 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"quick",
+				"Git: Quick Commit (repo)"
+			],
+			[
+				"gitquic\t",
+				"Git: Quick Commit (current file)"
+			],
 			[
 				"git quick",
 				"Git: Quick Commit (current file)"
@@ -353,10 +371,6 @@
 			[
 				"gitpush",
 				"Git: Push Current Branch"
-			],
-			[
-				"quick",
-				"Git: Quick Commit (current file)"
 			],
 			[
 				"git init",
@@ -705,6 +719,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"tagInfo",
 			"wpdb",
 			"'trailmgmt_sites'",
 			"site-detail-panel",
@@ -861,15 +876,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 11329,
+						"buffer_size": 12081,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								10164,
-								10164
+								9735,
+								9735
 							]
 						],
 						"settings":
@@ -879,7 +894,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 4660.0,
+						"translation.y": 4115.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -887,48 +902,19 @@
 				},
 				{
 					"buffer": 1,
-					"file": "trailmgmt_db_info.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 416,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								381,
-								381
-							]
-						],
-						"settings":
-						{
-							"git_gutter_is_enabled": true,
-							"syntax": "Packages/PHP/PHP.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
 					"file": "sites.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7663,
+						"buffer_size": 21159,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3977,
-								3977
+								19572,
+								19572
 							]
 						],
 						"settings":
@@ -939,27 +925,27 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1978.0,
+						"translation.y": 7865.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 2,
 					"file": "css/trailmgmt.css",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 409,
+						"buffer_size": 1691,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								407,
-								407
+								1555,
+								1555
 							]
 						],
 						"settings":
@@ -968,14 +954,14 @@
 							"syntax": "Packages/CSS/CSS.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 891.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 3,
 					"file": "transfer_data.sql",
 					"semi_transient": false,
 					"settings":
@@ -999,6 +985,35 @@
 						},
 						"translation.x": 0.0,
 						"translation.y": 44.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "trailmgmt_db_info.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 416,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								284,
+								284
+							]
+						],
+						"settings":
+						{
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/PHP/PHP.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
@@ -1044,7 +1059,7 @@
 	},
 	"output.git":
 	{
-		"height": 97.0
+		"height": 27.0
 	},
 	"output.mdpopups":
 	{
@@ -1054,7 +1069,7 @@
 	"project": "birdtrailmanagementplugin.sublime-project",
 	"replace":
 	{
-		"height": 73.0
+		"height": 42.0
 	},
 	"save_all_on_build": true,
 	"select_file":

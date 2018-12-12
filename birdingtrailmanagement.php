@@ -20,25 +20,23 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 * Setup
 */
 
-function trailmgmt_load_scripts ($hook) {
-	if ($hook != 'sites.php') { return;}
-/*
-	wp_register_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
-	wp_enqueue_style('font-awesome');
-*/
-	wp_register_style('trailmgmt', dirname( __FILE__ ) . '/css/trailmgmt.css');
-	wp_enqueue_style('trailmgmt');
-/*
-	wp_enqueue_style('bootstrap', dirname( __FILE__ ) . '/bootstrap/css/bootstrap.css');
-	wp_enqueue_style('parent-style', dirname( __FILE__ )  . '/style.css',array('bootstrap'));
-	wp_enqueue_script( 'bootstrap-js', dirname( __FILE__ )  . '/bootstrap/js/bootstrap.min.js', array( 'jquery' ), '4.0.0', false );
-*/	
+ function trailmgmt_enqueue_style() {
+	wp_enqueue_style('trailmgmt', plugin_dir_url(__FILE__) . '/css/trailmgmt.css',false);
+	//wp_enqueue_style('jquery-ui-dialog');
+	wp_enqueue_style('trailmgmt-admin-ui-css',
+                plugin_dir_url(__FILE__) . '/css/jquery-ui-1.12.1/jquery-ui.min.css',
+                false);
+ }
+
+//function trailmgmt_load_scripts ($hook) {
+function trailmgmt_load_scripts () {
+	//if ($hook != 'sites.php') { return;}
+	wp_enqueue_script('jquery-ui-dialog');
 };
 
+add_action( 'admin_enqueue_scripts', 'trailmgmt_enqueue_style' );
 add_action( 'admin_enqueue_scripts', 'trailmgmt_load_scripts' );
-/*
-add_action( 'wp_enqueue_scripts', 'trailmgmt_load_scripts' );
-*/
+
 
 /* ====================================================================
 * Creates Menu for Managing Trail Data
@@ -288,7 +286,7 @@ function get_trailmgmt_data() {
     			
     			$results = $wpdb->get_results(
     				"
-    				SELECT siteslug, title, id
+    				SELECT siteslug, groupslug, category, title, id
     				FROM " . $table_name . "
     				"
     			);
@@ -329,15 +327,41 @@ function get_trailmgmt_data() {
     			global $wpdb;
 
     			$table_name = $wpdb->prefix . $sitedatatable;
-				
-				$data = json_decode($_POST['data']);
-
+    			
     			$wpdb->update(
     				$table_name,
     				array(
-
-    				)
+			 			'title' => $_POST['title'],
+						'siteslug' => $_POST['siteslug'],
+						'category' => $_POST['category'],
+						'directions' => $_POST['directions'],
+						'description' => $_POST['description'],
+						'species' => $_POST['species'],
+						'extwebsite' => $_POST['extwebsite'],
+						'groupslug' => $_POST['groupslug'],
+						'habitats' => $_POST['habitats'],
+						'lat' => $_POST['lat'],
+						'lon' => $_POST['lon'],
+						'boataccess' => $_POST['boataccess'],
+						'fee' => $_POST['fee'],
+						'picnic' => $_POST['picnic'],
+						'hiking' => $_POST['hiking'],
+						'trailmaps' => $_POST['trailmaps'],
+						'camping' => $_POST['camping'],
+						'visitor' => $_POST['visitor'],
+						'hunting' => $_POST['hunting'],
+						'restrooms' => $_POST['restrooms'],
+						'handicap' => $_POST['handicap'],
+						'viewing' => $_POST['viewing'],
+						'boatlaunch' => $_POST['boatlaunch'],
+						'interpretive' => $_POST['interpretive'],
+						'placeid' => $_POST['placeid'],
+						'locid' => $_POST['locid'],
+						'what3words' => $_POST['what3words']
+    				),
+    				array ( 'id' => $_POST['id'])
     			);
+				
 
     			break; //end switch code execution
 
@@ -345,43 +369,62 @@ function get_trailmgmt_data() {
     			global $wpdb;
 
     			$table_name = $wpdb->prefix . $sitedatatable;
-
-				$date = new \DateTime('now');
-
+    			
     			$wpdb->insert(
     				$table_name,
     				array(
-    					//'title' => 'test site ' . $date,
-    					'title' => 'test site ',
-    					'siteslug' => 'test-site',
-    					'category' => 'Central Blue Ridge Parkway',
-    					'directions' => $date //testing
+			 			'title' => $_POST['title'],
+						'siteslug' => $_POST['siteslug'],
+						'category' => $_POST['category'],
+						'directions' => $_POST['directions'],
+						'description' => $_POST['description'],
+						'species' => $_POST['species'],
+						'extwebsite' => $_POST['extwebsite'],
+						'groupslug' => $_POST['groupslug'],
+						'habitats' => $_POST['habitats'],
+						'lat' => $_POST['lat'],
+						'lon' => $_POST['lon'],
+						'boataccess' => $_POST['boataccess'],
+						'fee' => $_POST['fee'],
+						'picnic' => $_POST['picnic'],
+						'hiking' => $_POST['hiking'],
+						'trailmaps' => $_POST['trailmaps'],
+						'camping' => $_POST['camping'],
+						'visitor' => $_POST['visitor'],
+						'hunting' => $_POST['hunting'],
+						'restrooms' => $_POST['restrooms'],
+						'handicap' => $_POST['handicap'],
+						'viewing' => $_POST['viewing'],
+						'boatlaunch' => $_POST['boatlaunch'],
+						'interpretive' => $_POST['interpretive'],
+						'placeid' => $_POST['placeid'],
+						'locid' => $_POST['locid'],
+						'what3words' => $_POST['what3words']
     				)
     			);
 
-
-
+				$results = $wpdb->insert_id;
+    			echo $results;
 
 			case "delete_site"://deletes a site
-				//TO BE DEVELOPED
-				break; //end switch code evaluationglobal $wpdb;
 
     			$table_name = $wpdb->prefix . $sitedatatable;
     			$id = json_decode($_POST['id']);
 
-    			$wpdb->delete(
+    			$results = $wpdb->delete(
     				$table_name,
     				array(
     					'id' => $id
     				)
     			);
 
-    			echo $id . ' DELETED!';
+    			echo $results;
 				break; //end switch code evaluation
 
-			case "upload_data_file": //populate data from a text file
+			case "upload_data_file": //populate bulk data from a text file
 				//TO BE DEVELOPED
 				// ~ delimited?
+				// HOW TO AUTOMATE THIS?
 
 				break;
 
