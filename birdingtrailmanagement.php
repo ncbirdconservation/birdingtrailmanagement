@@ -22,7 +22,6 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
  function trailmgmt_enqueue_style() {
 	wp_enqueue_style('trailmgmt', plugin_dir_url(__FILE__) . '/css/trailmgmt.css',false);
-	//wp_enqueue_style('jquery-ui-dialog');
 	wp_enqueue_style('trailmgmt-admin-ui-css',
                 plugin_dir_url(__FILE__) . '/css/jquery-ui-1.12.1/jquery-ui.min.css',
                 false);
@@ -41,8 +40,6 @@ add_action( 'admin_enqueue_scripts', 'trailmgmt_load_scripts' );
 /* ====================================================================
 * Creates Menu for Managing Trail Data
 */
-
-
 
 //hook for adding admin menus
 add_action('admin_menu','birdingtrail_add_pages');
@@ -90,12 +87,18 @@ function birdingtrail_add_pages() {
 	//sub-menu (businesses)
 	$submenu_business_slug = 'businesses';
 	add_submenu_page($menu_slug,$submenu_business_slug,$capability,$menu_slug);
-
+	*/
 
 	//sub-menu (visits)
 	$submenu_visits_slug = 'visits';
-	add_submenu_page($menu_slug,$submenu_visits_slug,$capability,$menu_slug);
-	*/
+	add_submenu_page(
+		$menu_slug,
+		'Site Visits',
+		'Site Visits',
+		$capability,
+		plugin_dir_path(__FILE__) . 'visits.php',
+		null
+	);
 
 }
 
@@ -120,9 +123,8 @@ function trailmgmt_menu() {
 global $trailmgmt_db_version;
 $trailmgmt_db_version = '0.1';
 */
-function trailmgmt_setup_site_table(){
-	//Insert code here to set up the trail site table
 
+function trailmgmt_setup_visit_table(){
 	global $wpdb;
 	global $trailmgmt_db_version;
 
@@ -132,6 +134,7 @@ function trailmgmt_setup_site_table(){
 	//CONSIDER REVISION, REMOVING UNEEDED FIELDS
 	// group, coords, others? change primary key to id?
 	$sql = "CREATE TABLE $table_name (
+
 		id mediumint(9) NOT NULL AUTO_INCREMENT,
 		title varchar(200) NOT NULL,
 		siteslug varchar(200) NOT NULL,
@@ -165,6 +168,33 @@ function trailmgmt_setup_site_table(){
 		locid varchar(255),
 		what3words varchar(255)
 		PRIMARY KEY  (siteslug)
+	) $charset_collate;";
+
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	dbDelta( $sql );
+
+}
+
+function trailmgmt_setup_site_table(){
+	//Insert code here to set up the trail site table
+
+	global $wpdb;
+	global $trailmgmt_db_version;
+
+	$table_name = $wpdb->prefix . 'trailmgmt_visits';
+	$charset_collate = $wpdb->get_charset_collate();
+
+	//CONSIDER REVISION, REMOVING UNEEDED FIELDS
+	// group, coords, others? change primary key to id?
+	$sql = "CREATE TABLE $table_name (
+		ID mediumint(9) NOT NULL AUTO_INCREMENT,
+		DTTM timestamp,
+		NCBTUSERID text,
+		PLATFORM varchar(100),
+		BROWSER text,
+		LAT decimal (11,8),
+		LON decimal (11,8)
+		PRIMARY KEY  (ID)
 	) $charset_collate;";
 
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -240,6 +270,7 @@ function get_trailmgmt_data() {
 		$request = strval( $_POST['dbrequest'] );
 
 		$sitedatatable = "trailmgmt_sites";
+		$visitdatatable = 'trailmgmt_visits';
 		global $wpdb;
 
 		// get db login information
@@ -264,7 +295,7 @@ function get_trailmgmt_data() {
     			
     			$results = $wpdb->get_results(
     				"
-    				SELECT siteslug, groupslug, category, title, id
+    				SELECT siteslug, groupslug, category, title, id, lat, lon
     				FROM " . $table_name . "
     				"
     			);
@@ -288,8 +319,8 @@ function get_trailmgmt_data() {
 	   			global $wpdb;
 
     			$table_name = $wpdb->prefix . $sitedatatable;
-				$id = strval( $_POST['id']); //for some reason, produces error when tag is 'siteslug' - WTF?
-				$sql = 'SELECT * FROM ' . $table_name . ' WHERE ID = "' . $id . '" LIMIT 1'; //will only return one record
+				$id = strval( $_POST['siteslug']); //for some reason, produces error when tag is 'siteslug' - WTF?
+				$sql = 'SELECT * FROM ' . $table_name . ' WHERE siteslug = "' . $id . '" LIMIT 1'; //will only return one record
 
     			
     			$results = $wpdb->get_row($sql);
@@ -338,7 +369,7 @@ function get_trailmgmt_data() {
 						'locid' => $_POST['locid'],
 						'what3words' => $_POST['what3words']
     				),
-    				array ( 'id' => $_POST['id'])
+    				array ( 'siteslug' => $_POST['siteslug'])
     			);
 				
 
@@ -422,27 +453,48 @@ function get_trailmgmt_data() {
 
 				break;
 
+			case "get_visits":
+				//==============================================================================================
+				//retrieve visit list for mapping
+				//TODO
+				//	- Add ability to filter results
+				//	- place restrictions on the number of records to return? (what is prohibitive?)
+
+				global $wpdb;
+
+    			$table_name = $wpdb->prefix . $visitdatatable;
+    			
+    			$results = $wpdb->get_results(
+    				"
+    				SELECT 	ID, DTTM, NCBTUSERID, PLATFORM, BROWSER, LAT, LON
+    				FROM " . $table_name . "
+    				ORDER BY DTTM DESC"
+    			);
+    			echo json_encode($results); //return results
+
+				wp_die(); //close DB connection
+	
+
+
+				break;
+
     		case "log_visit": //post website visit data
     			//NOT WORKING RIGHT NOW, need to create table on plugin installation
-				$conn = new mysqli($servername, $username, $password, $dbname);
-				
-				//data passed from successful geolocation
-	    		$platform = strval( $_POST['platform']);
-	    		$browser = strval( $_POST['browser']);
-	    		$userid = strval( $_POST['ncbtuserid']);
-	    		$lat = doubleval( $_POST['lat']);
-	    		$lon = doubleval( $_POST['lon']);
+    			global $wpdb;
 
+    			$table_name = $wpdb->prefix . $visitdatatable;
+    			
+    			$wpdb->insert(
+    				$table_name,
+    				array(
+			 			'PLATFORM' => strval($_POST['platform']),
+			 			'BROWSER' => strval($_POST['browser']),
+			 			'NCBTUSERID' => strval($_POST['ncbtuserid']),
+			 			'LAT' => doubleval($_POST['lat']),
+			 			'LON' => doubleval($_POST['lon'])
+			 		)
+    			);
 
-				//$sql = "INSERT INTO visits (PLATFORM, LAT, LON) VALUES ('test',35,85)"; //TESTING
-				$sql = "INSERT INTO visits (PLATFORM, BROWSER, NCBTUSERID, LAT, LON) VALUES ('" . $platform . "', '" . $browser . "','" . $userid . "'," . $lat . "," . $lon . ")"; //post data
-
-				if ($conn->query($sql) === TRUE) {
-					echo "New record created successfully";
-				} else {
-				    echo "Error: " . $sql . "<br>" . $conn->error;
-				}
-				$conn->close();
 				wp_die(); //close db connection
 				break; //end switch code evaluation
 
