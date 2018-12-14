@@ -187,7 +187,7 @@
 			"file": "birdingtrailmanagement.php",
 			"settings":
 			{
-				"buffer_size": 6540,
+				"buffer_size": 14215,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -807,15 +807,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6540,
+						"buffer_size": 14215,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2151,
-								2151
+								0,
+								0
 							]
 						],
 						"settings":

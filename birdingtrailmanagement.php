@@ -375,6 +375,28 @@ function get_trailmgmt_data() {
 
     			break; //end switch code execution
 
+    		case "update_site_field":
+				//==============================================================================================
+    			// UPDATE ONE FIELD FROM PASSED DATA
+
+    			global $wpdb;
+
+    			$table_name = $wpdb->prefix . $sitedatatable;
+    			
+    			$field = strval( $_POST['field']);
+	    		$data = strval( $_POST['data']);
+	    		$siteslug = strval( $_POST['slug']);
+
+				$results = $wpdb->update(
+					$table_name,
+					array($field => $data),
+					array('siteslug' => $siteslug)
+				);	    		
+
+				echo json_encode($results);
+
+    			break;
+
     		case "create_new_site":
 				//==============================================================================================
     			// CREATE NEW SITE RECORD FROM PASSED DATA

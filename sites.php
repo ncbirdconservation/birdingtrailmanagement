@@ -8,7 +8,18 @@
 
 
 ?>
+<!-- eventually, move this to the main birdingtrailmanagement.php page -->
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+<style>
+	#siteslug-duplicate-warning {
+	color:#ff0000;
+	font-weight:600;
+	font-size:0.8rem;
+}
+
+
+</style>
 
 <div class="wrap">
 <div id="plugin-header-wrapper">
@@ -116,19 +127,20 @@
 	            	var groupslug = this.groupslug;
 
 	            	//jQuery('#site-list').append('<li class="site-list-item" id="' + slug + '">' + title + '</li>');
-	            	jQuery('#site-list').append('<li class="site-list-item" id="' + id + '">' + title + '</li>');
-	            	var siteData = `<div class="site-list-data" id="site-list-data-${id}" style="display:none;">
-	            		<div class="site-list-data-category" id="site-list-data-category-${id}">${group}</div>
-	            		<div class="site-list-data-categoryslug" id="site-list-data-categoryslug-${id}">${groupslug}</div>
-	            		<div class="site-list-data-slug" id="site-list-data-slug-${id}">${slug}</div>
+	            	jQuery('#site-list').append('<li class="site-list-item" id="' + slug + '">' + title + '</li>');
+	            	var siteData = `<div class="site-list-data" id="site-list-data-${slug}" style="display:none;">
+	            		<div class="site-list-data-category" id="site-list-data-category-${slug}">${group}</div>
+	            		<div class="site-list-data-categoryslug" id="site-list-data-categoryslug-${slug}">${groupslug}</div>
+	            		<div class="site-list-data-slug" id="site-list-data-slug-${slug}">${slug}</div>
 	            		</div>`
-	            	jQuery('#' + id).append(siteData);
+	            	jQuery('#' + slug).append(siteData);
 
 	            });
 
 	            //SETUP EVENT FOR RETRIEVING AND DISPLAYING SITE DETAIL
 			    jQuery('.site-list-item').click(function(){
 			    	//console.log('site-list-item click triggered');
+			    	console.log(this.id + " list item clicked");
 			    	buildSiteDataForm(this.id); //RETRIEVE SITE DATA, POPULATE FORM
 		    	});
 
@@ -149,16 +161,18 @@
 			//loop through all site-list-data items
 
 			itemData = jQuery(this).text();
+			//console.log("category: "+ itemData);
 
 			//if (!categories.includes(itemData)) {
 			if (!(itemData in categories)) {
-				var itemId = jQuery(this).attr('id');
+				var itemId = jQuery(this).attr('id'); //catagory slug
 				var itemIdSlug = itemId.replace("category","categoryslug");
 				//itemId = jQuery("#"+itemIdSlug).text();
 
 				categories[jQuery("#"+itemIdSlug).text()] = itemData;
 			}
 		});
+		//console.log(categories);
 		return categories;
 	}
 
@@ -176,6 +190,60 @@
 
 	}
 
+    //SET OF FUNCTIONS TO GOVERN BUTTON BEHAVIOR
+    //TODO
+    //	- add required fields behavior (don't save)
+    //	- add popoup notifications
+    //		- are you sure you want to delete?
+    //		- you have made changes, are you sure you want to discard them?
+    
+    function disableButton(button){jQuery(button).css('color', buttonOffColor);}
+
+    function enableButton(button){jQuery(button).css('color', buttonOnColor);}
+
+    function readButton(button){
+    	//reads if button on or off
+    	if (jQuery(button).css('color')==buttonOnColor) {
+    		//button on
+   			console.log(jQuery(button).attr('id') + " button is on");
+    		return true;
+    	} else {
+   			console.log(jQuery(button).attr('id') + " button is off");
+    		return false;
+    	}
+
+    };
+
+    function isSlugUnique(slug) {
+    	//check to make sure the passed slug is not in the list
+    	//when siteslug is changed evaluate if unique
+    	//return false if slug not passed
+    	var response = true;
+    	if (slug){
+    		//slug exists
+    		//console.log('slug passed');
+			jQuery('.site-list-data-slug').each(function(index,value){
+				if (slug == jQuery(this).text()) {response=false;} //loop through slugs in list
+			});
+    		
+    	} else {response = false;}
+    	console.log(slug + ' is unique?:' + response);
+    	return response;
+    }
+
+
+    function isDataClean() {
+    	//check to see if the data form has required records and no duplicates
+    	bSlugUnique = isSlugUnique();
+
+    	if (bSlugUnique ){
+    		return true;
+    	} else {
+    		return false;
+    	}
+
+    }
+
 	//===========================================================================================================
 	// BUILD THE SITE DATA ENTRY FORM
     //function buildSiteDataForm(siteslug){
@@ -184,7 +252,7 @@
 		//siteslug = this.id;
 		//ONCE setupBlankDataForm Developed, run first, then populate with data
 		//if no siteslug sent, build blank fields from first record
-
+		console.log('building form for: ' + siteslug);
 		var bBlank; //flag to indicate if data should be filled 
 		var dbRequest; //variable that determines request type
 		var Disabled; //variable to determine if field is enabled.
@@ -196,7 +264,7 @@
 
 
 		console.log('buildSiteDataForm triggered: ' + siteslug);
-		jQuery("#site-detail-form").empty();
+		jQuery("#site-detail-form").empty(); //clear out the exising form
 
 		jQuery.ajax({
 		    type: "POST",
@@ -205,7 +273,7 @@
 		    data: {
 		        'action': 'get_trailmgmt_data', //server side function
 		        //'slug': siteslug,
-		        'id': siteslug,
+		        'siteslug': siteslug,
 		        'dbrequest': dbRequest //TESTING
 		    },
 		    success: function(data, status) {
@@ -228,7 +296,9 @@
 			        	var inputTag = 'input';
 			        	var inputClass = '';
 			        	var interTagValue = '';
-			        	var tagDisabled = fieldTypes[index][1];
+			        	var tagDisabled = fieldData[1];
+			        	var bRequired = fieldData[3];
+			        	var textRequired = "";
 
 			        	switch(fieldData[0]) {
 			        	case "checkbox": 
@@ -259,7 +329,9 @@
 			        	jDataItem = jQuery('<div/>',{
 			        		class:'site-data-item'
 			        	});
-						jDataItem.append('<div class="site-data-heading" id="' + index + '-heading">' + index + '</div>');
+
+			        	if (bRequired) {textRequired = '*'};
+						jDataItem.append('<div class="site-data-heading" id="' + index + '-heading">' + index + textRequired + '</div>');
 			        	
 			        	if (fieldData[0]=='select') {
 			        		//create a select item
@@ -299,6 +371,8 @@
 			        	jQuery('#site-detail-form').append(jDataItem); //add the data item to the form
 
 
+				        //=================================================================
+				        //SETUP FORM EVENTS
 			        	//==============================================================================
 			        	// some fields populate others, build functions here to automate
 			        	// category -> categoryslug
@@ -307,12 +381,33 @@
 			        	var linkedField = fieldData[2];
 			        	if (linkedField){
 			        		jQuery("#"+index).change(function(){
+			        			console.log(index + " field changed");
 			        			var newValue = slugify(jQuery(this).attr("value"));
 			        			//console.log("change triggered on "+ index + " to change " + linkedField + " to " + newValue);
 			        			//jQuery("#"+linkedField).removeAttr("disabled");
 			        			jQuery("#"+linkedField).attr("value",newValue);
 			        			jQuery("#"+linkedField).text(newValue);
 			        			//jQuery("#"+linkedField).attr("disabled","disabled");
+			        			if (index == 'title') { //check for uniqueness in title field
+			        				var slug = newValue;
+			        				console.log(slug + ' populated, fixin to check if unique')
+							    	//first check to make sure we are not editing, but creating a new record
+							    	console.log('id: ' + jQuery('#id').text());
+							    	console.log('id length: ' + jQuery('#id').text().length);
+							    	if (!(jQuery('#id').text().length>0)) { //id not populated, therefore a new record
+								    	if (isSlugUnique(slug)) { //check if slug is unique...
+								    		console.log("slug is unique");
+								    		jQuery('#siteslug-duplicate-warning').remove(); //remove warning label
+								    		jQuery('#siteslug').css('color',''); //remove red outline
+								    	} else {
+								    		//turn text red
+								    		console.log("slug is NOT unique");
+								    		jQuery('#siteslug-heading').append('<div id="siteslug-duplicate-warning">DUPLICATE VALUE!</div>');
+								    		jQuery('#siteslug').css('color','#ff0000');//add red outline
+								    	}
+								    }
+			        				
+			        			}
 			        		});
 
 			        	}
@@ -322,6 +417,8 @@
 
 		        jQuery('#id').css('background','#999'); //turn id field dark to indicate that it cannot be edited
 
+
+
 		    }, 
 		    error: function(jqxhr, status, exception) {
 		      console.log("error db request")
@@ -330,30 +427,6 @@
 
 		});
 
-
-    };
-
-    //SET OF FUNCTIONS TO GOVERN BUTTON BEHAVIOR
-    //TODO
-    //	- add required fields behavior (don't save)
-    //	- add popoup notifications
-    //		- are you sure you want to delete?
-    //		- you have made changes, are you sure you want to discard them?
-    
-    function disableButton(button){jQuery(button).css('color', buttonOffColor);}
-
-    function enableButton(button){jQuery(button).css('color', buttonOnColor);}
-
-    function readButton(button){
-    	//reads if button on or off
-    	if (jQuery(button).css('color')==buttonOnColor) {
-    		//button on
-    		return true;
-   			console.log(jQuery(button).attr('id') + " button is on");
-    	} else {
-   			console.log(jQuery(button).attr('id') + " button is off");
-    		return false;
-    	}
 
     };
 
@@ -443,8 +516,9 @@
 
 		//COPY DATA
 		jQuery('#site-detail-copy').click(function(){
-			//simply remove the contents of the ID field
+			//simply remove the contents of the ID and slug field
 
+			jQuery('#siteslug').attr("value",'');
 			jQuery('#id').attr("value",'');
 
 		});
@@ -457,6 +531,7 @@
 
 			//get id
 			var saveId = jQuery('#id').attr('value');
+			var slugToSave = jQuery('#siteslug').attr('value'); 			
 			if (saveId.length>0) {
 				//update record
 				console.log('updating data for site ' + saveId);
@@ -467,60 +542,61 @@
 				var dbRequest = 'create_new_site';
 			}
 			
-			jQuery.ajax({
-			    type: "POST",
-			    dataType: "json",
-			    url: ajaxurl, //url for WP ajax php file, var def added to header in functions.php
-			    data: {
-			        'action': 'get_trailmgmt_data', //server side function
-			        'dbrequest': dbRequest,
-			        'id' : saveId,
-		 			'title' : jQuery('#title').attr('value'),
-					'siteslug' : jQuery('#siteslug').attr('value'),
-					'category' : jQuery('#category').attr('value'),
-					'directions' : jQuery('#directions').attr('value'),
-					'description' : jQuery('#description').attr('value'),
-					'species' : jQuery('#species').attr('value'),
-					'extwebsite' : jQuery('#extwebsite').attr('value'),
-					'groupslug' : jQuery('#groupslug').attr('value'),
-					'habitats' : jQuery('#habitats').attr('value'),
-					'lat' : jQuery('#lat').attr('value'),
-					'lon' : jQuery('#lon').attr('value'),
-					'boataccess' : jQuery('#boataccess').attr('value'),
-					'fee' : jQuery('#fee').attr('value'),
-					'picnic' : jQuery('#picnic').attr('value'),
-					'hiking' : jQuery('#hiking').attr('value'),
-					'trailmaps' : jQuery('#trailmaps').attr('value'),
-					'camping' : jQuery('#camping').attr('value'),
-					'visitor' : jQuery('#visitor').attr('value'),
-					'hunting' : jQuery('#hunting').attr('value'),
-					'restrooms' : jQuery('#restrooms').attr('value'),
-					'handicap' : jQuery('#handicap').attr('value'),
-					'viewing' : jQuery('#viewing').attr('value'),
-					'boatlaunch' : jQuery('#boatlaunch').attr('value'),
-					'interpretive' : jQuery('#interpretive').attr('value'),
-					'placeid' : jQuery('#placeid').attr('value'),
-					'locid' : jQuery('#locid').attr('value'),
-					'what3words' : jQuery('#what3words').attr('value')
-
-			    },
-			    success: function(data, status) {
-			    	console.log("new site successful");
-				    console.log(status + " : " + data);
-				    populateSiteList(); //refresh the list
-				    //jQuery("<div>New Record Created!</div>").dialog();
-				    //get new id and fill in the field...
-
-				    buildSiteDataForm(data);
-			    },
-			    error: function(jqxhr, status, exception) {
-			      console.log("error db request")
-			      console.log(status + " : " + exception);
-
-				}
-			});
-
-		});
+			if (isDataClean()){
+				jQuery.ajax({
+				    type: "POST",
+				    dataType: "json",
+				    url: ajaxurl, //url for WP ajax php file, var def added to header in functions.php
+				    data: {
+				        'action': 'get_trailmgmt_data', //server side function
+				        'dbrequest': dbRequest,
+				        'id' : saveId,
+			 			'title' : jQuery('#title').attr('value'),
+						'siteslug' : slugToSave,
+						'category' : jQuery('#category').attr('value'),
+						'directions' : jQuery('#directions').attr('value'),
+						'description' : jQuery('#description').attr('value'),
+						'species' : jQuery('#species').attr('value'),
+						'extwebsite' : jQuery('#extwebsite').attr('value'),
+						'groupslug' : jQuery('#groupslug').attr('value'),
+						'habitats' : jQuery('#habitats').attr('value'),
+						'lat' : jQuery('#lat').attr('value'),
+						'lon' : jQuery('#lon').attr('value'),
+						'boataccess' : jQuery('#boataccess').attr('value'),
+						'fee' : jQuery('#fee').attr('value'),
+						'picnic' : jQuery('#picnic').attr('value'),
+						'hiking' : jQuery('#hiking').attr('value'),
+						'trailmaps' : jQuery('#trailmaps').attr('value'),
+						'camping' : jQuery('#camping').attr('value'),
+						'visitor' : jQuery('#visitor').attr('value'),
+						'hunting' : jQuery('#hunting').attr('value'),
+						'restrooms' : jQuery('#restrooms').attr('value'),
+						'handicap' : jQuery('#handicap').attr('value'),
+						'viewing' : jQuery('#viewing').attr('value'),
+						'boatlaunch' : jQuery('#boatlaunch').attr('value'),
+						'interpretive' : jQuery('#interpretive').attr('value'),
+						'placeid' : jQuery('#placeid').attr('value'),
+						'locid' : jQuery('#locid').attr('value'),
+						'what3words' : jQuery('#what3words').attr('value')
+	
+				    },
+				    success: function(data, status) {
+				    	console.log("new site successful");
+					    console.log(status + " : " + data);
+					    populateSiteList(); //refresh the list
+					    //jQuery("<div>New Record Created!</div>").dialog();
+					    //get new id and fill in the field...
+	
+					    buildSiteDataForm(slugToSave);
+				    },
+				    error: function(jqxhr, status, exception) {
+				      console.log("error db request")
+				      console.log(status + " : " + exception);
+	
+					}
+				}); //end ajax call
+			} //end if data clean
+		});// end save button click
 
 
     });
