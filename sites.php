@@ -242,133 +242,145 @@
     		return false;
     	}
 
-    }
+    };
 
 	//===========================================================================================================
 	// BUILD THE SITE DATA ENTRY FORM
+
+	function buildFormField (index,value){
+		//input field name and value, return data form object to be inserted...
+		if (index in fieldTypes) {// make sur the passed field name is in the field array
+	    	//if (bBlank) {value = ""}; //blank out values if new blank form requested
+	    	//console.log(index + ":" + value + ":" + fieldTypes[index]);
+	    	var fieldData = fieldTypes[index]; //retrieve appropriate fieldType info from array
+	    	//var inputType; //not needed?
+	    	var tagInfo = ''; //extra info to put in tag for fields like checkbox
+	    	var inputTag = 'input'; //default tag
+	    	var inputClass = ''; //css class for the field
+	    	var interTagValue = ''; //value to go inside html tags for fields like checkbox
+	    	var tagDisabled = fieldData[1]; //is this field disabled?
+	    	var bRequired = fieldData[3]; //is this field required?
+	    	var textRequired = ""; //dunno?
+
+			//create a jQuery object for the field
+	    	jDataItem = jQuery('<div/>',{
+	    		class:'site-data-item'
+	    	});
+	    	if (bRequired) {textRequired = '*'};
+			jDataItem.append('<div class="site-data-heading" id="' + index + '-heading">' + index + textRequired + '</div>');
+
+	    	switch(fieldData[0]) {
+	    	case "checkbox": 
+	        	if (value == 1) {
+	        		tagInfo = 'checked';
+	        	}
+	        	jDataField = jQuery('<'+ inputTag	+' type="'+ fieldData[0] + '" name="' + index + '" class="site-data-data'+inputClass+'" id="' + index +  '" value="' + value + '" ' + tagInfo +' ' + tagDisabled+'>'+interTagValue+'</'+inputTag+'></div>');
+	    		break;
+	    	case "textarea":
+	    		inputTag = 'textarea';
+	    		inputClass = ' site-data-textarea';
+	    		interTagValue = value;
+
+	        	jDataField = jQuery('<'+ inputTag	+' type="'+ fieldData[0] + '" name="' + index + '" class="site-data-data'+inputClass+'" id="' + index +  '" value="' + value + '" ' + tagInfo +' ' + tagDisabled+'>'+interTagValue+'</'+inputTag+'></div>');
+	    		break;
+	    	case "select":
+	    		inputTag = 'select';
+	    		inputClass = ' site-data-select';
+
+	    		//create a select item
+	    		//console.log('building select item');
+	    		jDataField = jQuery('<select/>', {
+	    			name: index,
+	    			class: 'site-data-data' + inputClass,
+	    			id: index
+	    		});
+
+	    		jQuery.each(categoryList,function(ind,val){
+	    			
+	    			var selectItem = `<option value="${ind}">${val}</option>`
+	    			jQuery(jDataField).append(selectItem);
+	    			//TESTING
+	    			//var sInd = slugify(val);
+	    			//console.log(`test slugify: ${val} - ${sInd}`);
+	    		});
+
+
+				var selectItem = `<option value="new-category">New Category</option>`
+	    		jQuery(jDataField).append(selectItem);
+
+	    		//set value to the data from the database
+	    		jQuery(jDataField).attr("value",slugify(value));
+
+	    		//add behavior for new value?
+	    		break;
+	    	default:
+
+	    	} // end of switch
+
+
+	    	//build and insert item
+	    	/* DISABLED VERSION
+	    	jQuery('#site-detail-form').append('<div class="site-data-item"><div class="site-data-heading" id="' + index + '-heading">' + index + '</div><'+ inputTag	+' type="'+ fieldTypes[index] + '" name="' + index + '" class="site-data-data'+inputClass+'" id="' + index +  '" value="' + value + '" ' + tagInfo +' disabled>'+interTagValue+'</'+inputTag+'></div>');*/
+
+	    	jDataItem.append(jDataField); //add the data field to the data item
+
+	    	return jDataItem;
+		}// end if checking if passed field name is in array
+	};//end of function
+
+
     //function buildSiteDataForm(siteslug){
     function buildSiteDataForm(siteslug){
 		//retrieve site info
 		//siteslug = this.id;
 		//ONCE setupBlankDataForm Developed, run first, then populate with data
 		//if no siteslug sent, build blank fields from first record
-		console.log('building form for: ' + siteslug);
 		var bBlank; //flag to indicate if data should be filled 
 		var dbRequest; //variable that determines request type
 		var Disabled; //variable to determine if field is enabled.
 
 		siteslug = siteslug || 'none'; //if siteslug blank - make 'none'
-
-		if (siteslug == 'none') {bBlank = true;dbRequest = 'retrieve_data_fields';}	//no slug passed, build blank form
-		else {bBlank = false;dbRequest = 'site_detail';}; //slug passed, build form and fill in data
-
+		console.log('building form for: ' + siteslug);
 
 		console.log('buildSiteDataForm triggered: ' + siteslug);
 		jQuery("#site-detail-form").empty(); //clear out the exising form
 
-		jQuery.ajax({
-		    type: "POST",
-		    dataType: "json",
-		    url: ajaxurl, //url for WP ajax php file, var def added to header in functions.php
-		    data: {
-		        'action': 'get_trailmgmt_data', //server side function
-		        //'slug': siteslug,
-		        'siteslug': siteslug,
-		        'dbrequest': dbRequest //TESTING
-		    },
-		    success: function(data, status) {
-		    	//place code here to deal with database results
-		    	//console.log("successful db request")
-		    	//console.log(data);
 
-		    	//gather group names/values from the site list
+		if (siteslug == 'none') {
+			bBlank = true;
+			dbRequest = 'retrieve_data_fields';
+			}	//no slug passed, build blank form
+		else {
 
-	        	var categoryList = getCategoryList();
-		        jQuery.each(data,function(index,value){
-		        	//loop through site data field, create elements in detail panel for each field
-		        	//console.log(index + ":" + value);
-		        	if (index in fieldTypes) {
-			        	if (bBlank) {value = ""}; //blank out values if new blank form requested
-			        	//console.log(index + ":" + value + ":" + fieldTypes[index]);
-			        	var fieldData = fieldTypes[index];
-			        	var inputType;
-			        	var tagInfo = ''; //extra info to put in tag
-			        	var inputTag = 'input';
-			        	var inputClass = '';
-			        	var interTagValue = '';
-			        	var tagDisabled = fieldData[1];
-			        	var bRequired = fieldData[3];
-			        	var textRequired = "";
+			bBlank = false;
+			dbRequest = 'site_detail'; //slug passed, build form and fill in data
+			//retrieve record, use fields for building form, fill in field data if siteslug present
+			jQuery.ajax({
+			    type: "POST",
+			    dataType: "json",
+			    url: ajaxurl, //url for WP ajax php file, var def added to header in functions.php
+			    data: {
+			        'action': 'get_trailmgmt_data', //server side function
+			        'siteslug': siteslug,
+			        'dbrequest': dbRequest //TESTING
+			    },
+			    success: function(data, status) {
+			    	//place code here to deal with database results
+			    	//console.log("successful db request")
+			    	//console.log(data);
 
-			        	switch(fieldData[0]) {
-			        	case "checkbox": 
-			            	if (value == 1) {
-			            		tagInfo = 'checked';
-			            	}
-			        		break;
-			        	case "textarea":
-			        		inputTag = 'textarea';
-			        		inputClass = ' site-data-textarea';
-			        		interTagValue = value;
-			        		break;
-			        	case "select":
-			        		inputTag = 'select';
-			        		inputClass = ' site-data-select';
+			    	//gather group names/values from the site list
 
-			        		break;
-			        	default:
+		        	var categoryList = getCategoryList();
 
-			        	}
+			        jQuery.each(data,function(index,value){
+			        	//loop through each site data field, create elements in detail panel for each field
+			        	//console.log(index + ":" + value);
 
+		        		//change this to invoke the buildFormField function
 
-			        	//build and insert item
-			        	/* DISABLED VERSION
-			        	jQuery('#site-detail-form').append('<div class="site-data-item"><div class="site-data-heading" id="' + index + '-heading">' + index + '</div><'+ inputTag	+' type="'+ fieldTypes[index] + '" name="' + index + '" class="site-data-data'+inputClass+'" id="' + index +  '" value="' + value + '" ' + tagInfo +' disabled>'+interTagValue+'</'+inputTag+'></div>');*/
-
-						
-			        	jDataItem = jQuery('<div/>',{
-			        		class:'site-data-item'
-			        	});
-
-			        	if (bRequired) {textRequired = '*'};
-						jDataItem.append('<div class="site-data-heading" id="' + index + '-heading">' + index + textRequired + '</div>');
-			        	
-			        	if (fieldData[0]=='select') {
-			        		//create a select item
-			        		//console.log('building select item');
-			        		jDataField = jQuery('<select/>', {
-			        			name: index,
-			        			class: 'site-data-data' + inputClass,
-			        			id: index
-			        		});
-
-			        		jQuery.each(categoryList,function(ind,val){
-			        			
-			        			var selectItem = `<option value="${ind}">${val}</option>`
-			        			jQuery(jDataField).append(selectItem);
-			        			//TESTING
-			        			//var sInd = slugify(val);
-			        			//console.log(`test slugify: ${val} - ${sInd}`);
-			        		});
-
-
-		        			var selectItem = `<option value="new-category">New Category</option>`
-			        		jQuery(jDataField).append(selectItem);
-
-			        		//set value to the data from the database
-			        		jQuery(jDataField).attr("value",slugify(value));
-
-			        		//add behavior for new value?
-
-
-
-			        	} else {
-
-				        	jDataField = jQuery('<'+ inputTag	+' type="'+ fieldData[0] + '" name="' + index + '" class="site-data-data'+inputClass+'" id="' + index +  '" value="' + value + '" ' + tagInfo +' ' + tagDisabled+'>'+interTagValue+'</'+inputTag+'></div>');
-			        	}
-			        	
-			        	jDataItem.append(jDataField); //add the data field to the data item
-			        	jQuery('#site-detail-form').append(jDataItem); //add the data item to the form
+			        	//jQuery('#site-detail-form').append(jDataItem); //add the data item to the form
+			        	jQuery('#site-detail-form').append(buildFormField(index, value)); //add the data item to the form
 
 
 				        //=================================================================
@@ -378,8 +390,9 @@
 			        	// category -> categoryslug
 			        	// title -> siteslug
 			        	// 
-			        	var linkedField = fieldData[2];
+			        	var linkedField = fieldData[3]; //name of linked field
 			        	if (linkedField){
+			        		console.log ("linked field found: " + linkedField);
 			        		jQuery("#"+index).change(function(){
 			        			console.log(index + " field changed");
 			        			var newValue = slugify(jQuery(this).attr("value"));
@@ -410,25 +423,20 @@
 			        			}
 			        		});
 
-			        	}
-
-	        		} //if field in fieldTypes array above, else do nothing
-		        });
-
-		        jQuery('#id').css('background','#999'); //turn id field dark to indicate that it cannot be edited
+				        } // end of linked field code
 
 
+				        jQuery('#id').css('background','#999'); //turn id field dark to indicate that it cannot be edited
+			        
+			        }); //end of if field loop...
+			    }, // end of dbrequest success
+			    error: function(jqxhr, status, exception) {
+			      console.log("error db request")
+			      console.log(status + " : " + exception);
+    		}); // end of dbrequest
+		} //end if/else
+    }; //end of function
 
-		    }, 
-		    error: function(jqxhr, status, exception) {
-		      console.log("error db request")
-		      console.log(status + " : " + exception);
-			}
-
-		});
-
-
-    };
 
 
    	//###########################################################################################################
@@ -471,7 +479,7 @@
 		jQuery('#site-detail-form').change(function(){
 			//fires when data is changed in field
 			enableButton(jQuery('#site-detail-save'));
-
+			//add code here to save record...
 		});
 
 		//CREATE NEW RECORD TO BE COMPLETED
@@ -532,7 +540,7 @@
 			//get id
 			var saveId = jQuery('#id').attr('value');
 			var slugToSave = jQuery('#siteslug').attr('value'); 			
-			if (saveId.length>0) {
+			if (saveId.length>0 && ) {
 				//update record
 				console.log('updating data for site ' + saveId);
 				var dbRequest = 'update_site_data';

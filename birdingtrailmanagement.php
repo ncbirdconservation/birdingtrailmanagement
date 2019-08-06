@@ -25,12 +25,15 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 	wp_enqueue_style('trailmgmt-admin-ui-css',
                 plugin_dir_url(__FILE__) . '/css/jquery-ui-1.12.1/jquery-ui.min.css',
                 false);
+	wp_enqueue_style('leaflet-style',"https://unpkg.com/leaflet@1.3.4/dist/leaflet.css",false);
  }
 
 //function trailmgmt_load_scripts ($hook) {
 function trailmgmt_load_scripts () {
 	//if ($hook != 'sites.php') { return;}
 	wp_enqueue_script('jquery-ui-dialog');
+	wp_enqueue_script('leaflet',"https://unpkg.com/leaflet@1.3.4/dist/leaflet.js",false);
+	wp_enqueue_script('heatmap',plugin_dir_url(__FILE__) . '/js/leaflet-heat.js',false);
 };
 
 add_action( 'admin_enqueue_scripts', 'trailmgmt_enqueue_style' );
@@ -124,7 +127,7 @@ global $trailmgmt_db_version;
 $trailmgmt_db_version = '0.1';
 */
 
-function trailmgmt_setup_visit_table(){
+function trailmgmt_setup_site_table(){
 	global $wpdb;
 	global $trailmgmt_db_version;
 
@@ -175,7 +178,7 @@ function trailmgmt_setup_visit_table(){
 
 }
 
-function trailmgmt_setup_site_table(){
+function trailmgmt_setup_visit_table(){
 	//Insert code here to set up the trail site table
 
 	global $wpdb;
@@ -212,6 +215,7 @@ function trailmgmt_install() {
 	// - add visit table also
 	// - add businesses table
 
+    trailmgmt_setup_visit_table();
     trailmgmt_setup_site_table();
  
 }
