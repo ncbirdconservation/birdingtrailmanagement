@@ -243,9 +243,7 @@
 				if (slug == jQuery(this).text()) {response=false;} //loop through slugs in list
 			});
     		
-    	} else {
-    		response = false;
-    	}
+    	} 
     	console.log(slug + ' is unique?:' + response);
     	return response;
     }
@@ -373,7 +371,7 @@
 	}//end of function
 
 
-	function buildBlankForm () {
+	function buildBlankDataForm () {
 		//build a blank form using the fieldTypes array
 
 		//loop through items
@@ -404,100 +402,93 @@
 		//console.log('buildSiteDataForm triggered: ' + siteslug);
 		jQuery("#site-detail-form").empty(); //clear out the exising form
 		//build blank form
-		buildBlankForm();
+		buildBlankDataForm();
 
-		if (siteslug == 'none') {
-			//no slug passed, build blank form
-			dbRequest = 'retrieve_data_fields';
-			
-		} else {
+		dbRequest = 'site_detail'; //slug passed, build form and fill in data
+		//retrieve record, use fields for building form, fill in field data if siteslug present
 
-			dbRequest = 'site_detail'; //slug passed, build form and fill in data
-			//retrieve record, use fields for building form, fill in field data if siteslug present
+		//get data from the 
+		jQuery.ajax({
+		    type: "POST",
+		    dataType: "json",
+		    url: ajaxurl, //url for WP ajax php file, var def added to header in functions.php
+		    data: {
+		        'action': 'get_trailmgmt_data', //server side function
+		        'siteslug': siteslug,
+		        'dbrequest': dbRequest //TESTING
+		    	},
+			success: function(data, status) {
+		    	//place code here to deal with database results
+		    	//console.log("successful db request")
+		    	//console.log(data);
 
-			//get data from the 
-			jQuery.ajax({
-			    type: "POST",
-			    dataType: "json",
-			    url: ajaxurl, //url for WP ajax php file, var def added to header in functions.php
-			    data: {
-			        'action': 'get_trailmgmt_data', //server side function
-			        'siteslug': siteslug,
-			        'dbrequest': dbRequest //TESTING
-			    	},
-				success: function(data, status) {
-			    	//place code here to deal with database results
-			    	//console.log("successful db request")
-			    	//console.log(data);
+		        jQuery.each(data,function(index,value){
+		        	//loop through each site data field, create elements in detail panel for each field
+		        	//console.log(index + ":" + value);
 
-			        jQuery.each(data,function(index,value){
-			        	//loop through each site data field, create elements in detail panel for each field
-			        	console.log(index + ":" + value);
+		        	//jQuery('#site-detail-form').append(jDataItem); //add the data item to the form
+		        	//jQuery('#site-detail-form').append(buildFormField(index, value)); //add the data item to the form
+		        	populateFormField(index, value);
 
-			        	//jQuery('#site-detail-form').append(jDataItem); //add the data item to the form
-			        	//jQuery('#site-detail-form').append(buildFormField(index, value)); //add the data item to the form
-			        	populateFormField(index, value);
-
-				        //=================================================================
-				        //SETUP FORM EVENTS
-			        	//==============================================================================
-			        	// some fields populate others, build functions here to automate
-			        	// category -> categoryslug
-			        	// title -> siteslug
-			        	// 
-			        	var linkedField = fieldData[3]; //name of linked field
-			        	if (linkedField){
-			        		console.log ("linked field found: " + linkedField);
-			        		jQuery("#"+index).change(function(){
-			        			console.log(index + " field changed");
-			        			var newValue = slugify(jQuery(this).attr("value"));
-			        			//console.log("change triggered on "+ index + " to change " + linkedField + " to " + newValue);
-			        			//jQuery("#"+linkedField).removeAttr("disabled");
-			        			jQuery("#"+linkedField).attr("value",newValue);
-			        			jQuery("#"+linkedField).text(newValue);
-			        			//jQuery("#"+linkedField).attr("disabled","disabled");
-			        			if (index == 'title') { //check for uniqueness in title field
-			        				var slug = newValue;
-			        				console.log(slug + ' populated, fixin to check if unique')
-							    	//first check to make sure we are not editing, but creating a new record
-							    	console.log('id: ' + jQuery('#id').text());
-							    	console.log('id length: ' + jQuery('#id').text().length);
-							    	if (!(jQuery('#id').text().length>0)) { //id not populated, therefore a new record
-								    	if (isSlugUnique(slug)) { //check if slug is unique...
-								    		console.log("slug is unique");
-								    		jQuery('#siteslug-duplicate-warning').remove(); //remove warning label
-								    		jQuery('#siteslug').css('color',''); //remove red outline
-								    	} else {
-								    		//turn text red
-								    		console.log("slug is NOT unique");
-								    		jQuery('#siteslug-heading').append('<div id="siteslug-duplicate-warning">DUPLICATE VALUE!</div>');
-								    		jQuery('#siteslug').css('color','#ff0000');//add red outline
-								    	}
-								    }//check if id populated if
-			        				
-		        				} // check if field is the title field
-			        		}); //end wrapper function, change code
-				        } // end of linked field code
+			        //=================================================================
+			        //SETUP FORM EVENTS
+		        	//==============================================================================
+		        	// some fields populate others, build functions here to automate
+		        	// category -> categoryslug
+		        	// title -> siteslug
+		        	// 
+		        	var linkedField = fieldData[3]; //name of linked field
+		        	if (linkedField){
+		        		console.log ("linked field found: " + linkedField);
+		        		jQuery("#"+index).change(function(){
+		        			console.log(index + " field changed");
+		        			var newValue = slugify(jQuery(this).attr("value"));
+		        			//console.log("change triggered on "+ index + " to change " + linkedField + " to " + newValue);
+		        			//jQuery("#"+linkedField).removeAttr("disabled");
+		        			jQuery("#"+linkedField).attr("value",newValue);
+		        			jQuery("#"+linkedField).text(newValue);
+		        			//jQuery("#"+linkedField).attr("disabled","disabled");
+		        			if (index == 'title') { //check for uniqueness in title field
+		        				var slug = newValue;
+		        				console.log(slug + ' populated, fixin to check if unique')
+						    	//first check to make sure we are not editing, but creating a new record
+						    	console.log('id: ' + jQuery('#id').text());
+						    	console.log('id length: ' + jQuery('#id').text().length);
+						    	if (!(jQuery('#id').text().length>0)) { //id not populated, therefore a new record
+							    	if (isSlugUnique(slug)) { //check if slug is unique...
+							    		console.log("slug is unique");
+							    		jQuery('#siteslug-duplicate-warning').remove(); //remove warning label
+							    		jQuery('#siteslug').css('color',''); //remove red outline
+							    	} else {
+							    		//turn text red
+							    		console.log("slug is NOT unique");
+							    		jQuery('#siteslug-heading').append('<div id="siteslug-duplicate-warning">DUPLICATE VALUE!</div>');
+							    		jQuery('#siteslug').css('color','#ff0000');//add red outline
+							    	}
+							    }//check if id populated if
+		        				
+	        				} // check if field is the title field
+		        		}); //end wrapper function, change code
+			        } // end of linked field code
 
 
-				        jQuery('#id').css('background','#999'); //turn id field dark to indicate that it cannot be edited
+			        jQuery('#id').css('background','#999'); //turn id field dark to indicate that it cannot be edited
 
-				    	//Set buttons to default config
-				    	enableButton(jQuery('#site-detail-new'));
-				    	enableButton(jQuery('#site-detail-delete'));
-				    	enableButton(jQuery('#site-detail-copy'));
-				    	disableButton(jQuery('#site-detail-save'));
-				    	enableButton(jQuery('#site-detail-clear'));
-			        
-			        }); //end of loop through fields
+			    	//Set buttons to default config
+			    	enableButton(jQuery('#site-detail-new'));
+			    	enableButton(jQuery('#site-detail-delete'));
+			    	enableButton(jQuery('#site-detail-copy'));
+			    	disableButton(jQuery('#site-detail-save'));
+			    	enableButton(jQuery('#site-detail-clear'));
+		        
+		        }); //end of loop through fields
 
-			    }, // end of dbrequest success
-			    error: function(jqxhr, status, exception) {
-			      console.log("error db request")
-			      console.log(status + " : " + exception);
-    			}
-    		}); // end of dbrequest
-		} //end if/else
+		    }, // end of dbrequest success
+		    error: function(jqxhr, status, exception) {
+		      console.log("error db request")
+		      console.log(status + " : " + exception);
+			}
+		}); // end of dbrequest
     }//end of buildsitedataform
 
 
@@ -539,11 +530,17 @@
 		// LOWER PRIORITY
 		// - pick coords/What3Words/eBird Hotspot from a map (or list) - popup...
 
-		//click events
+		//LISTENERS
+		
+		//fires when data is changed in field
 		jQuery('#site-detail-form').change(function(){
-			//fires when data is changed in field
 			enableButton(jQuery('#site-detail-save'));
 			//add code here to save record...
+		});
+
+		//listen for change in title, update site slug
+		jQuery('#title').change(function(){
+			jQuery('#siteslug').val(slugify(jQuery('#title').val()));
 		});
 
 		//listen for changes in form fields
@@ -555,15 +552,18 @@
 	    	enableButton(jQuery('#site-detail-delete'));
 	    	enableButton(jQuery('#site-detail-copy'));
 	    	enableButton(jQuery('#site-detail-save'));
-	    	enableButton(jQuery('#site-detail-clear'));
 
 		});
 
 		//CREATE NEW RECORD TO BE COMPLETED
 		jQuery('#site-detail-new').click(function(){
-			console.log("new clicked");
-			buildSiteDataForm(); // build blank data form
+			buildBlankDataForm(); // build blank data form
+
+	    	enableButton(jQuery('#site-detail-new'));
+	    	enableButton(jQuery('#site-detail-delete'));
+	    	enableButton(jQuery('#site-detail-copy'));
 			disableButton(jQuery('#site-detail-save')); //disable save button, will be enabled when record started.
+	    	enableButton(jQuery('#site-detail-clear'));
 
 		});
 
@@ -619,6 +619,7 @@
 
 			console.log("save clicked");
 			var bRecordClean = true;
+			var bNewRecord = false;
 
 			//get id
 			var saveId = jQuery('#id').attr('value');
@@ -630,10 +631,12 @@
 
 			} else {
 				//create new record
+				bNewRecord = true;
 				console.log('creating new record');
 				var dbRequest = 'create_new_site';
 				// check to make sure slug is unique
-				if (!(isSlugUnique(JQuery('#siteslug').val()))) {
+				siteslug = jQuery('#siteslug').val();
+				if (!(isSlugUnique(jQuery('#siteslug').val()))) {
 					bRecordClean = false;
 					alert("Please ensure the site name (and site slug) is uniqe.");
 
