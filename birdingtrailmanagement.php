@@ -20,12 +20,23 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 * Setup
 */
 
+$sitedatatable = "trailmgmt_sites";
+$visitdatatable = "trailmgmt_visits";
+
+
  function trailmgmt_enqueue_style() {
 	wp_enqueue_style('trailmgmt', plugin_dir_url(__FILE__) . '/css/trailmgmt.css',false);
 	wp_enqueue_style('trailmgmt-admin-ui-css',
                 plugin_dir_url(__FILE__) . '/css/jquery-ui-1.12.1/jquery-ui.min.css',
                 false);
 	wp_enqueue_style('leaflet-style',"https://unpkg.com/leaflet@1.3.4/dist/leaflet.css",false);
+
+	wp_enqueue_style('bootstrap', get_stylesheet_directory_uri() . '/bootstrap/css/bootstrap.css');
+	wp_enqueue_style('parent-style', get_stylesheet_directory_uri() . '/trailmgmt.css',array('bootstrap'));
+	wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+
+	// Register the script like this for a theme:
+	wp_enqueue_script( 'bootstrap-js', get_template_directory_uri() . '/bootstrap/js/bootstrap.min.js', array( 'jquery' ), '4.0.0', false );
  }
 
 //function trailmgmt_load_scripts ($hook) {
@@ -138,9 +149,10 @@ function trailmgmt_setup_site_table(){
 	// group, coords, others? change primary key to id?
 	$sql = "CREATE TABLE $table_name (
 
-		id mediumint(9) NOT NULL AUTO_INCREMENT,
+		/*id mediumint(9) NOT NULL AUTO_INCREMENT,*/
 		title varchar(200) NOT NULL,
 		siteslug varchar(200) NOT NULL,
+		sitecode varchar(8) NOT NULL,
 		category varchar(100),
 		`group` varchar(100),
 		directions text,
@@ -170,7 +182,7 @@ function trailmgmt_setup_site_table(){
 		placeid varchar(255),
 		locid varchar(255),
 		what3words varchar(255)
-		PRIMARY KEY  (siteslug)
+		PRIMARY KEY  (sitecode)
 	) $charset_collate;";
 
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -273,8 +285,6 @@ function get_trailmgmt_data() {
 
 		$request = strval( $_POST['dbrequest'] );
 
-		$sitedatatable = "trailmgmt_sites";
-		$visitdatatable = 'trailmgmt_visits';
 		global $wpdb;
 
 		// get db login information
@@ -295,8 +305,8 @@ function get_trailmgmt_data() {
 
 	   			global $wpdb;
 
-    			$table_name = $wpdb->prefix . $sitedatatable;
-    			
+    			//$table_name = $wpdb->prefix . $sitedatatable; #THIS DOES NOT SEEM TO WORK!!!!
+    			$table_name = $wpdb->prefix . "trailmgmt_sites";
     			$results = $wpdb->get_results(
     				"
     				SELECT siteslug, groupslug, category, title, id, lat, lon
@@ -304,6 +314,7 @@ function get_trailmgmt_data() {
     				"
     			);
     			echo json_encode($results); //return results
+    			//echo json_encode($sitedatatable); //return results # TESTING
 
 				wp_die(); //close DB connection
 	    		break;
@@ -322,7 +333,8 @@ function get_trailmgmt_data() {
 
 	   			global $wpdb;
 
-    			$table_name = $wpdb->prefix . $sitedatatable;
+    			//$table_name = $wpdb->prefix . $sitedatatable;
+    			$table_name = $wpdb->prefix . "trailmgmt_sites";
 				$id = strval( $_POST['siteslug']); //for some reason, produces error when tag is 'siteslug' - WTF?
 				$sql = 'SELECT * FROM ' . $table_name . ' WHERE siteslug = "' . $id . '" LIMIT 1'; //will only return one record
 
@@ -340,7 +352,8 @@ function get_trailmgmt_data() {
 
     			global $wpdb;
 
-    			$table_name = $wpdb->prefix . $sitedatatable;
+    			//$table_name = $wpdb->prefix . $sitedatatable;
+    			$table_name = $wpdb->prefix . "trailmgmt_sites";
     			
     			$wpdb->update(
     				$table_name,
@@ -385,7 +398,8 @@ function get_trailmgmt_data() {
 
     			global $wpdb;
 
-    			$table_name = $wpdb->prefix . $sitedatatable;
+    			//$table_name = $wpdb->prefix . $sitedatatable;
+    			$table_name = $wpdb->prefix . "trailmgmt_sites";
     			
     			$field = strval( $_POST['field']);
 	    		$data = strval( $_POST['data']);
@@ -407,7 +421,8 @@ function get_trailmgmt_data() {
 
     			global $wpdb;
 
-    			$table_name = $wpdb->prefix . $sitedatatable;
+    			//$table_name = $wpdb->prefix . $sitedatatable;
+    			$table_name = $wpdb->prefix . "trailmgmt_sites";
     			
     			$wpdb->insert(
     				$table_name,
@@ -449,7 +464,8 @@ function get_trailmgmt_data() {
 				//==============================================================================================
 				//DELETE SITE RECORD FROM PASSED id field
 			
-    			$table_name = $wpdb->prefix . $sitedatatable;
+    			//$table_name = $wpdb->prefix . $sitedatatable;
+    			$table_name = $wpdb->prefix . "trailmgmt_sites";
     			$id = json_decode($_POST['id']);
 
     			$results = $wpdb->delete(
@@ -467,6 +483,8 @@ function get_trailmgmt_data() {
 				//TO BE DEVELOPED
 				// ~ delimited?
 				// HOW TO AUTOMATE THIS?
+    			//$table_name = $wpdb->prefix . "trailmgmt_sites";
+    			
 
 				break;
 
@@ -488,19 +506,38 @@ function get_trailmgmt_data() {
 
 				global $wpdb;
 
-    			$table_name = $wpdb->prefix . $visitdatatable;
+    			//$table_name = $wpdb->prefix . $visitdatatable; //NOT WORKING FOR SOME REASON!
+    			$table_name = $wpdb->prefix . "trailmgmt_visits";
     			
-    			$results = $wpdb->get_results(
-    				"
-    				SELECT 	ID, DTTM, NCBTUSERID, PLATFORM, BROWSER, LAT, LON
-    				FROM " . $table_name . "
-    				ORDER BY DTTM DESC"
-    			);
+    			$start_date = date_format($_POST[startdate], 'Y-m-d');
+    			$end_date = date_format($_POST[enddate], 'Y-m-d');
+    			if ($start_date && $end_date) {
+
+	    			$results = $wpdb->get_results(
+	    				"
+	    				SELECT 	ID, DTTM, NCBTUSERID, PLATFORM, BROWSER, LAT, LON
+	    				FROM " . $table_name . "
+	    				WHERE DTTM BETWEEN '" . $start_date . "' AND '" . $end_date	. "'
+	    				ORDER BY DTTM DESC"
+	    			);
+
+    			} else {
+
+	    			$results = $wpdb->get_results(
+	    				"
+	    				SELECT 	ID, DTTM, NCBTUSERID, PLATFORM, BROWSER, LAT, LON
+	    				FROM " . $table_name . "
+	    				ORDER BY DTTM DESC"
+	    			);
+    			}
     			echo json_encode($results); //return results
+    			//echo json_encode($start_date);
 
 				wp_die(); //close DB connection
-	
-
+	/*
+	    				WHERE DTTM BETWEEN '2019-09-01' AND '2019-10-01' 
+	    				WHERE DTTM BETWEEN '" . $start_date . "' AND '" . $end_date	. "' 
+*/
 
 				break;
 
@@ -508,7 +545,8 @@ function get_trailmgmt_data() {
     			//NOT WORKING RIGHT NOW, need to create table on plugin installation
     			global $wpdb;
 
-    			$table_name = $wpdb->prefix . $visitdatatable;
+    			//$table_name = $wpdb->prefix . $visitdatatable; //NOT WORKING FOR SOME REASON!
+    			$table_name = $wpdb->prefix . "trailmgmt_visits";
     			
     			$wpdb->insert(
     				$table_name,

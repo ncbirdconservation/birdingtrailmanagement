@@ -223,16 +223,26 @@
 			"file": "birdingtrailmanagement.php",
 			"settings":
 			{
-				"buffer_size": 15080,
+				"buffer_size": 16440,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "uninstall.php",
+			"settings":
+			{
+				"buffer_size": 432,
+				"encoding": "UTF-8",
+				"line_ending": "Windows",
+				"name": "// if uninstall.php is not called by WordPress, di"
 			}
 		},
 		{
 			"file": "visits.php",
 			"settings":
 			{
-				"buffer_size": 9107,
+				"buffer_size": 10607,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -241,7 +251,7 @@
 			"file": "sites.php",
 			"settings":
 			{
-				"buffer_size": 22259,
+				"buffer_size": 24217,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -250,7 +260,7 @@
 			"file": "css/trailmgmt.css",
 			"settings":
 			{
-				"buffer_size": 1895,
+				"buffer_size": 1908,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -267,6 +277,14 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"git commt",
+				"Git: Quick Commit (repo)"
+			],
+			[
+				"git diff",
+				"Git: Diff Current File (Ignore Whitespace)"
+			],
 			[
 				"quick\t",
 				"Git: Quick Commit (repo)"
@@ -346,10 +364,6 @@
 			[
 				"git qui",
 				"Git: Quick Commit (repo)"
-			],
-			[
-				"git diff",
-				"Git: Diff Current File (Ignore Whitespace)"
 			],
 			[
 				"git bran",
@@ -600,6 +614,7 @@
 	},
 	"file_history":
 	[
+		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/plugins/birdingtrailmanagement/birdtrailmanagementplugin.sublime-project",
 		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/plugins/birdingtrailmanagement/transfer_visit_data.sql",
 		"/C/Users/andersonsk/AppData/Local/Temp/Temp1_takeout-20190726T183908Z-001.zip/Takeout/Location History/Location History.json",
 		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/birdingtrail/functions.php",
@@ -726,12 +741,11 @@
 		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpifwk_user-user_password.bin",
 		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpifwiki_ssh.pub",
 		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpif_wiki2.ppk",
-		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpif_wiki.pub",
-		"/C/data/@nc_partners_in_flight/wiki/site_code/20170310_LocalSettings_works.php"
+		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpif_wiki.pub"
 	],
 	"find":
 	{
-		"height": 22.0
+		"height": 40.0
 	},
 	"find_in_files":
 	{
@@ -746,6 +760,30 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"criteria-form",
+			"$sitedatatable",
+			"$visitdatatable",
+			"$sitedatatable",
+			"get_trail",
+			"id",
+			"$sitedatatable",
+			"platformHeat",
+			"buildFormField",
+			"getCategoryList",
+			"cBox",
+			"buildSiteDataForm",
+			"site-detail-save",
+			"textarea",
+			"text",
+			"textarea",
+			"text",
+			"fieldInfo",
+			"fieldinfo",
+			"categoryList",
+			"fieldInfo",
+			"buildFormField",
+			"fieldData",
+			"jDatafie",
 			"inputType",
 			"isdata",
 			"site-detail-save",
@@ -849,31 +887,7 @@
 			"loadLabelListeners",
 			"siteIcon",
 			"site-popup",
-			"infowindow",
-			"\t\t\t\t\t$",
-			"siteLabelListeners",
-			"console.log",
-			"infoBox",
-			"$servername",
-			"twitter-button",
-			"modal-title",
-			"console.log",
-			"clearModalPanel",
-			"currLatLng",
-			"/* Bootstrap md breakpoint */\n",
-			"birdingtrail_featuring_posts",
-			"display",
-			"hestia",
-			"post-thumbnails",
-			"\\n",
-			"}{",
-			"\\n",
-			" }",
-			"\\n\\n",
-			" \\n",
-			"\\n \\n",
-			"  ",
-			"^"
+			"infowindow"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -881,6 +895,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"dField",
 			" | ",
 			"~",
 			",false],",
@@ -931,7 +946,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -940,15 +955,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 15080,
+						"buffer_size": 16440,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								992,
-								992
+								1389,
+								1389
 							]
 						],
 						"settings":
@@ -958,27 +973,57 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 974.0,
+						"translation.y": 343.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "visits.php",
+					"file": "uninstall.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 9107,
+						"buffer_size": 432,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								7924,
-								7924
+								432,
+								432
+							]
+						],
+						"settings":
+						{
+							"auto_name": "// if uninstall.php is not called by WordPress, di",
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/PHP/PHP.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "visits.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10607,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4057,
+								4389
 							]
 						],
 						"settings":
@@ -988,27 +1033,27 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 3868.0,
+						"translation.y": 2607.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
+					"buffer": 3,
 					"file": "sites.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 22259,
+						"buffer_size": 24217,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								14065,
-								14065
+								10272,
+								10272
 							]
 						],
 						"settings":
@@ -1019,27 +1064,27 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 4578.0,
+						"translation.y": 1800.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 4,
 					"file": "css/trailmgmt.css",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1895,
+						"buffer_size": 1908,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1571,
-								1656
+								788,
+								788
 							]
 						],
 						"settings":
@@ -1049,10 +1094,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 316.0,
+						"translation.y": 343.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 4,
 					"type": "text"
 				}
 			]
@@ -1060,7 +1105,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 22.0
+		"height": 24.0
 	},
 	"input":
 	{
@@ -1105,7 +1150,7 @@
 	"project": "birdtrailmanagementplugin.sublime-project",
 	"replace":
 	{
-		"height": 40.0
+		"height": 44.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -1143,7 +1188,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 127.0,
+	"side_bar_width": 170.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
