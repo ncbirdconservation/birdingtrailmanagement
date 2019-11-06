@@ -310,9 +310,10 @@ function get_trailmgmt_data() {
     			$results = $wpdb->get_results(
     				"
     				SELECT siteslug, groupslug, category, title, id, lat, lon
-    				FROM " . $table_name . "
+    				FROM " . $table_name . " WHERE active='ACTIVE' ORDER BY title
     				"
     			);
+    			//SELECT siteslug, groupslug, category, title, id, lat, lon FROM x3I_trailmgmt_sites WHERE active='ACTIVE' ORDER BY title
     			echo json_encode($results); //return results
     			//echo json_encode($sitedatatable); //return results # TESTING
 

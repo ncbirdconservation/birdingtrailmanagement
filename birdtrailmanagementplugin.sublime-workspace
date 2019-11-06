@@ -223,7 +223,19 @@
 			"file": "birdingtrailmanagement.php",
 			"settings":
 			{
-				"buffer_size": 16440,
+				"buffer_size": 16948,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "@ECHO OFF\nCLS\nECHO ***Backup routine***\n\nREM ECHO - delete contents of temp folders\nREM del C:\\temp\\*.* /f /s /q\nREM del C:\\data\\temp\\*.* /f /s /q\nREM del C:\\Users\\andersonsk\\AppData\\Local\\Temp\\*.* /f /s /q\n\nECHO - copy modified files to backup\nset name=%date:~-4,4%%date:~-10,2%%date:~-7,2%\nmkdir J:\\%name%\nxcopy C:\\Users\\skanderson\\* J:\\%name%\\ /f /l /s /e /m\n\n\nREM xcopy C:\\data E:\\bcb_backup\\ /D /Y /U\nREM xcopy C:\\Users\\andersonsk\\SharePoint\\WRCBir~1 E:\\bcb_backup\\@BCLT\\ /D /Y /U\n\nECHO ***Backup complete***\nREM shutdown -s\n",
+			"file": "/C/Users/skanderson/OneDrive - State of North Carolina/@admin/computer/backup.bat",
+			"file_size": 553,
+			"file_write_time": 132170905949589706,
+			"settings":
+			{
+				"buffer_size": 530,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -278,6 +290,10 @@
 		"selected_items":
 		[
 			[
+				"quick",
+				"Git: Quick Commit (repo)"
+			],
+			[
 				"git commt",
 				"Git: Quick Commit (repo)"
 			],
@@ -315,10 +331,6 @@
 			],
 			[
 				"gitqui\t",
-				"Git: Quick Commit (repo)"
-			],
-			[
-				"quick",
 				"Git: Quick Commit (repo)"
 			],
 			[
@@ -614,6 +626,8 @@
 	},
 	"file_history":
 	[
+		"/E/ebird_data/ebd_relMay_2018_sample/ebd_US-AL-101_201801_201801_relMay-2018.txt",
+		"/C/Users/skanderson/OneDrive - State of North Carolina/@admin/computer/backup.bat",
 		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/plugins/birdingtrailmanagement/birdtrailmanagementplugin.sublime-project",
 		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/plugins/birdingtrailmanagement/transfer_visit_data.sql",
 		"/C/Users/andersonsk/AppData/Local/Temp/Temp1_takeout-20190726T183908Z-001.zip/Takeout/Location History/Location History.json",
@@ -739,13 +753,11 @@
 		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpifwiki_ssh",
 		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpifwiki_ssh_pvt.ppk",
 		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpifwk_user-user_password.bin",
-		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpifwiki_ssh.pub",
-		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpif_wiki2.ppk",
-		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpif_wiki.pub"
+		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpifwiki_ssh.pub"
 	],
 	"find":
 	{
-		"height": 40.0
+		"height": 24.0
 	},
 	"find_in_files":
 	{
@@ -946,7 +958,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -955,32 +967,61 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 16440,
+						"buffer_size": 16948,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1389,
-								1389
+								15866,
+								15866
 							]
 						],
 						"settings":
 						{
-							"git_gutter_is_enabled": true,
+							"git_gutter_is_enabled": false,
 							"syntax": "Packages/PHP/PHP.sublime-syntax",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 343.0,
+						"translation.y": 710.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
+					"file": "/C/Users/skanderson/OneDrive - State of North Carolina/@admin/computer/backup.bat",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 530,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								308,
+								362
+							]
+						],
+						"settings":
+						{
+							"git_gutter_is_enabled": false,
+							"syntax": "Packages/Batch File/Batch File.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
 					"file": "uninstall.php",
 					"semi_transient": false,
 					"settings":
@@ -1006,11 +1047,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
+					"buffer": 3,
 					"file": "visits.php",
 					"semi_transient": false,
 					"settings":
@@ -1022,25 +1063,25 @@
 						"selection":
 						[
 							[
-								4057,
-								4389
+								3906,
+								3906
 							]
 						],
 						"settings":
 						{
-							"git_gutter_is_enabled": true,
+							"git_gutter_is_enabled": false,
 							"syntax": "Packages/PHP/PHP.sublime-syntax",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 2607.0,
+						"translation.y": 215.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 4,
 					"file": "sites.php",
 					"semi_transient": false,
 					"settings":
@@ -1067,11 +1108,11 @@
 						"translation.y": 1800.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 5,
 					"file": "css/trailmgmt.css",
 					"semi_transient": false,
 					"settings":
@@ -1097,7 +1138,7 @@
 						"translation.y": 343.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 5,
 					"type": "text"
 				}
 			]
@@ -1109,7 +1150,7 @@
 	},
 	"input":
 	{
-		"height": 35.0
+		"height": 37.0
 	},
 	"layout":
 	{
@@ -1140,7 +1181,7 @@
 	},
 	"output.git":
 	{
-		"height": 27.0
+		"height": 29.0
 	},
 	"output.mdpopups":
 	{
