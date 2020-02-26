@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"sour",
+				"source_folder"
+			],
+			[
 				"la",
 				"layerControl"
 			],
@@ -220,67 +224,64 @@
 	"buffers":
 	[
 		{
-			"file": "birdingtrailmanagement.php",
+			"contents": "username: judithscarl\n\npw1:3xtr4N4BC!w3bh4lp (?)\npw2:N$BC1commcomm (MailChimp - updated in LastPass)\n",
 			"settings":
 			{
-				"buffer_size": 16948,
+				"buffer_size": 101,
+				"line_ending": "Windows",
+				"name": "username: judithscarl"
+			}
+		},
+		{
+			"file": "/C/Users/skanderson/OneDrive - State of North Carolina/@ad_hoc/20200217_WVNT_talk/ebird_analysis/parse_ebd_create_subset.py",
+			"settings":
+			{
+				"buffer_size": 16139,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"contents": "@ECHO OFF\nCLS\nECHO ***Backup routine***\n\nREM ECHO - delete contents of temp folders\nREM del C:\\temp\\*.* /f /s /q\nREM del C:\\data\\temp\\*.* /f /s /q\nREM del C:\\Users\\andersonsk\\AppData\\Local\\Temp\\*.* /f /s /q\n\nECHO - copy modified files to backup\nset name=%date:~-4,4%%date:~-10,2%%date:~-7,2%\nmkdir J:\\%name%\nxcopy C:\\Users\\skanderson\\* J:\\%name%\\ /f /l /s /e /m\n\n\nREM xcopy C:\\data E:\\bcb_backup\\ /D /Y /U\nREM xcopy C:\\Users\\andersonsk\\SharePoint\\WRCBir~1 E:\\bcb_backup\\@BCLT\\ /D /Y /U\n\nECHO ***Backup complete***\nREM shutdown -s\n",
-			"file": "/C/Users/skanderson/OneDrive - State of North Carolina/@admin/computer/backup.bat",
-			"file_size": 553,
-			"file_write_time": 132170905949589706,
+			"contents": "",
+			"file": "/C/Users/skanderson/OneDrive - State of North Carolina/@ad_hoc/20200217_WVNT_talk/ebird_analysis/results/20200108_2018_US_ebd_state_summary.csv",
+			"file_size": 0,
+			"file_write_time": 132229939500000000,
 			"settings":
 			{
-				"buffer_size": 530,
-				"encoding": "UTF-8",
+				"buffer_size": 0,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "uninstall.php",
+			"file": "/C/Users/skanderson/OneDrive - State of North Carolina/@ad_hoc/20200217_WVNT_talk/ebird_analysis/20200107_header_fields.txt",
 			"settings":
 			{
-				"buffer_size": 432,
+				"buffer_size": 670,
 				"encoding": "UTF-8",
 				"line_ending": "Windows",
-				"name": "// if uninstall.php is not called by WordPress, di"
-			}
-		},
-		{
-			"file": "visits.php",
-			"settings":
-			{
-				"buffer_size": 10607,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "sites.php",
-			"settings":
-			{
-				"buffer_size": 24217,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "css/trailmgmt.css",
-			"settings":
-			{
-				"buffer_size": 1908,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
+				"name": "GLOBAL UNIQUE IDENTIFIER,LAST EDITED DATE,TAXONOMI"
 			}
 		}
 	],
-	"build_system": "",
+	"build_system": "Packages/Python/Python.sublime-build",
 	"build_system_choices":
 	[
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		]
 	],
 	"build_varint": "",
 	"command_palette":
@@ -294,16 +295,28 @@
 				"Git: Quick Commit (repo)"
 			],
 			[
+				"Package Control: ",
+				"Package Control: Remove Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"git add",
+				"Git: Add Current File"
+			],
+			[
+				"quick\t",
+				"Git: Quick Commit (repo)"
+			],
+			[
 				"git commt",
 				"Git: Quick Commit (repo)"
 			],
 			[
 				"git diff",
 				"Git: Diff Current File (Ignore Whitespace)"
-			],
-			[
-				"quick\t",
-				"Git: Quick Commit (repo)"
 			],
 			[
 				"quicck",
@@ -340,10 +353,6 @@
 			[
 				"git quick",
 				"Git: Quick Commit (current file)"
-			],
-			[
-				"git add",
-				"Git: Add Current File"
 			],
 			[
 				"git ini",
@@ -502,10 +511,6 @@
 				"Git: Quick Commit (current file)"
 			],
 			[
-				"install",
-				"Package Control: Install Package"
-			],
-			[
 				"remove",
 				"Package Control: Remove Package"
 			],
@@ -519,10 +524,6 @@
 			],
 			[
 				"Package Control: remove",
-				"Package Control: Remove Package"
-			],
-			[
-				"Package Control: ",
 				"Package Control: Remove Package"
 			],
 			[
@@ -626,8 +627,33 @@
 	},
 	"file_history":
 	[
-		"/E/ebird_data/ebd_relMay_2018_sample/ebd_US-AL-101_201801_201801_relMay-2018.txt",
+		"/C/Users/skanderson/Downloads/Install Wish List.tat",
+		"/J/ebd_relNov-2019/20200108_2018_US_ebd_subset.csv",
+		"/J/ebd_relNov-2019/20200108_US_ebd_subset.csv",
+		"/C/Users/skanderson/OneDrive - State of North Carolina/@ad_hoc/20200217_WVNT_talk/ebird_analysis/results/20200108_US_ebd_state_summary.csv",
+		"/C/Users/skanderson/OneDrive - State of North Carolina/@ad_hoc/20200217_WVNT_talk/ebird_analysis/results/20200107_2018_US_ebd_state_summary.csv",
+		"/C/Users/skanderson/OneDrive - State of North Carolina/@ad_hoc/20200217_WVNT_talk/ebird_analysis/results/20200107_2018_US_ebd_state_checklists.csv",
+		"/C/Users/skanderson/OneDrive - State of North Carolina/@ad_hoc/2018/20181113_ebird_wvnt/pictures/nc_svg.svg",
+		"/C/Users/skanderson/AppData/Roaming/Sublime Text 3/Packages/User/python.sublime-build",
+		"/C/Users/skanderson/AppData/Roaming/Sublime Text 3/Packages/User/Anaconda.sublime-settings",
+		"/F/ebd_relNov-2019/ebd_relNov-2019.txt",
+		"/C/Users/skanderson/OneDrive - State of North Carolina/@projects/nabci_comm/website/posts/20191209_posts.xml",
+		"/C/Users/skanderson/OneDrive - State of North Carolina/@admin/org_charts/salary_testing.R",
+		"/K/PortableApps/PortableGit/README.portable",
+		"/K/Documents/Docs/githubsite/_posts/buckaroobanzai.md",
+		"/K/Documents/Docs/githubsite/_posts/think-different.md",
+		"/K/Documents/Docs/githubsite/_posts/Civility.md",
+		"/K/Documents/Docs/githubsite/_posts/things.md",
+		"/C/Users/skanderson/OneDrive - State of North Carolina/@@ncbt_files/website/20190913_website_info.txt",
+		"/C/Users/skanderson/Documents/ArcGIS/Projects/NCBA/SelectRandomBlocks.py",
+		"/C/Users/skanderson/OneDrive - State of North Carolina/@@ncbt_files/ncbt_site_survey_info/20170320_ncbt_info_import.txt",
+		"/C/Users/skanderson/OneDrive - State of North Carolina/@@ncbt_files/website/2018_wordpress/wp-content/plugins/birdingtrailmanagement/birdingtrailmanagement.php",
+		"/C/Users/skanderson/OneDrive - State of North Carolina/@@ncbt_files/website/2018_wordpress/wp-content/plugins/birdingtrailmanagement/uninstall.php",
+		"/C/Users/skanderson/OneDrive - State of North Carolina/@@ncbt_files/website/2018_wordpress/wp-content/plugins/birdingtrailmanagement/visits.php",
+		"/C/Users/skanderson/OneDrive - State of North Carolina/@@ncbt_files/website/2018_wordpress/wp-content/plugins/birdingtrailmanagement/sites.php",
+		"/C/Users/skanderson/OneDrive - State of North Carolina/@@ncbt_files/website/2018_wordpress/wp-content/plugins/birdingtrailmanagement/css/trailmgmt.css",
 		"/C/Users/skanderson/OneDrive - State of North Carolina/@admin/computer/backup.bat",
+		"/E/ebird_data/ebd_relMay_2018_sample/ebd_US-AL-101_201801_201801_relMay-2018.txt",
 		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/plugins/birdingtrailmanagement/birdtrailmanagementplugin.sublime-project",
 		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/plugins/birdingtrailmanagement/transfer_visit_data.sql",
 		"/C/Users/andersonsk/AppData/Local/Temp/Temp1_takeout-20190726T183908Z-001.zip/Takeout/Location History/Location History.json",
@@ -728,36 +754,11 @@
 		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/orfeo_parent-child/js/ncbt_data.js",
 		"/C/data/@nc_birding_trail/website/2017_wordpress/wp/wp-content/themes/x-child/key_info.php",
 		"/C/data/@nc_birding_trail/website/ncbt-website-master/html/20180216_map.html",
-		"/C/data/@projects/@wldp/website/C1_R3_details2.html",
-		"/C/data/@ad_hoc/20170606_gator_map/analysis2/Alligator_Occupancy_Script_22Jan2018.R",
-		"/C/data/@ad_hoc/20170606_gator_map/analysis2/Alligator_Nmixture_Script_23Jan2018.R",
-		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/orfeo_parent-child/doteasy_files/header.php",
-		"/C/data/@nc_birding_trail/website/2017_wordpress/wp/wp-content/themes/x-child/functions.php",
-		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/orfeo_parent-child/doteasy_files/site-data.php",
-		"/C/data/@nc_birding_trail/website/2017_wordpress/wp/20170921_custom_notes",
-		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/orfeo_parent-child/doteasy_files/key_info.php",
-		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/hestia/header.php",
-		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/orfeo_parent-child/style.css",
-		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/orfeo_parent-child/functions.php",
-		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/orfeo/functions.php",
-		"/C/data/@nc_birding_trail/website/2018_wordpress/wp-content/themes/sydney/page.php",
-		"/C/data/@nc_birding_trail/ebird/NC_Observer_IDs.csv",
-		"/C/data/@nc_birding_trail/ebird/log.txt",
-		"/C/data/@nc_birding_trail/ebird/World-NC checklists results.csv",
-		"/C/data/@nc_partners_in_flight/wiki/data_import_export/downloaded/Conservation+Connections-20180104220038.xml",
-		"/C/data/@nc_birding_trail/ebird/world nc checklists.py",
-		"/C/data/@nc_partners_in_flight/wiki/site_code/UPGRADE",
-		"/C/data/@nc_partners_in_flight/wiki/wiki/extensions/SemanticMediaWiki/res/smw/ext.smw.css",
-		"/C/data/@nc_partners_in_flight/wiki/wiki/skins/Vector/images/arrow-collapsed-rtl.svg",
-		"/C/data/@nc_partners_in_flight/wiki/site_code/skins/MinervaNeue/gitinfo.json",
-		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpifwiki_ssh",
-		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpifwiki_ssh_pvt.ppk",
-		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpifwk_user-user_password.bin",
-		"/C/data/@nc_birding_trail/website/2017_wordpress/changing_domain_hosts/ncpifwiki_ssh.pub"
+		"/C/data/@projects/@wldp/website/C1_R3_details2.html"
 	],
 	"find":
 	{
-		"height": 24.0
+		"height": 40.0
 	},
 	"find_in_files":
 	{
@@ -772,6 +773,22 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"count",
+			"counter",
+			"rootdir",
+			"])",
+			"bctryall",
+			"bcntyall",
+			"sum_check_col",
+			"state_check_keys",
+			"check_key",
+			"state_summary_fields",
+			"folder",
+			"start",
+			"time",
+			"iterkeys",
+			"print",
+			"\n",
 			"criteria-form",
 			"$sitedatatable",
 			"$visitdatatable",
@@ -883,23 +900,7 @@
 			"showLabels",
 			"loadMouseListeners",
 			"retrievePlaceId",
-			"retrievePlaceData",
-			"updateSiteInfo",
-			"record updated",
-			"retrievePlaceData",
-			"updateSiteInfo",
-			"siteslug",
-			"updateSiteInfo",
-			"siteslug",
-			"siteslug\t\t",
-			"siteslug",
-			"custom-script",
-			"infobox",
-			"console.log",
-			"loadLabelListeners",
-			"siteIcon",
-			"site-popup",
-			"infowindow"
+			"retrievePlaceData"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -907,6 +908,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			", ",
 			"dField",
 			" | ",
 			"~",
@@ -958,34 +960,33 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "birdingtrailmanagement.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 16948,
+						"buffer_size": 101,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								15866,
-								15866
+								44,
+								27
 							]
 						],
 						"settings":
 						{
+							"auto_name": "username: judithscarl",
 							"git_gutter_is_enabled": false,
-							"syntax": "Packages/PHP/PHP.sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 710.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
@@ -993,25 +994,56 @@
 				},
 				{
 					"buffer": 1,
-					"file": "/C/Users/skanderson/OneDrive - State of North Carolina/@admin/computer/backup.bat",
+					"file": "/C/Users/skanderson/OneDrive - State of North Carolina/@ad_hoc/20200217_WVNT_talk/ebird_analysis/parse_ebd_create_subset.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 530,
+						"buffer_size": 16139,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								308,
-								362
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false,
+							"word_wrap": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 5252.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/C/Users/skanderson/OneDrive - State of North Carolina/@ad_hoc/20200217_WVNT_talk/ebird_analysis/results/20200108_2018_US_ebd_state_summary.csv",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
 							]
 						],
 						"settings":
 						{
 							"git_gutter_is_enabled": false,
-							"syntax": "Packages/Batch File/Batch File.sublime-syntax"
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1021,124 +1053,33 @@
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "uninstall.php",
+					"buffer": 3,
+					"file": "/C/Users/skanderson/OneDrive - State of North Carolina/@ad_hoc/20200217_WVNT_talk/ebird_analysis/20200107_header_fields.txt",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 432,
+						"buffer_size": 670,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								432,
-								432
+								0,
+								670
 							]
 						],
 						"settings":
 						{
-							"auto_name": "// if uninstall.php is not called by WordPress, di",
+							"auto_name": "GLOBAL UNIQUE IDENTIFIER,LAST EDITED DATE,TAXONOMI",
 							"git_gutter_is_enabled": true,
-							"syntax": "Packages/PHP/PHP.sublime-syntax"
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "visits.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 10607,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3906,
-								3906
-							]
-						],
-						"settings":
-						{
-							"git_gutter_is_enabled": false,
-							"syntax": "Packages/PHP/PHP.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 215.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "sites.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 24217,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								10272,
-								10272
-							]
-						],
-						"settings":
-						{
-							"auto_name": "",
-							"git_gutter_is_enabled": true,
-							"syntax": "Packages/PHP/PHP.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1800.0,
-						"zoom_level": 1.0
-					},
 					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "css/trailmgmt.css",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1908,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								788,
-								788
-							]
-						],
-						"settings":
-						{
-							"git_gutter_is_enabled": true,
-							"syntax": "Packages/CSS/CSS.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 343.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
 					"type": "text"
 				}
 			]
@@ -1175,6 +1116,10 @@
 		]
 	},
 	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 368.0
+	},
 	"output.find_results":
 	{
 		"height": 0.0
@@ -1187,7 +1132,7 @@
 	{
 		"height": 0.0
 	},
-	"pinned_build_system": "",
+	"pinned_build_system": "Packages/Python/Python.sublime-build",
 	"project": "birdtrailmanagementplugin.sublime-project",
 	"replace":
 	{
